@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Project Timeline — {{ project_name }}</title>
+<style>
+
+/* ── TT Hoves (self-hosted) ─────────────────────────────────────── */
+/* ── TT Hoves (self-hosted) ─────────────────────────────────────── */
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/extrabold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Font variables */
+:root {
+  --font-body: "TT Hoves", sans-serif;
+  --font-display: "TT Hoves", sans-serif;
+}
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: "TT Hoves", sans-serif;
+  font-size: 9.9pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Page shell ─────────────────────────────────────────────────── */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 10mm 13mm 0 13mm;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PAGE HEADER
+   Logo (small) + Title block left  |  PAGE 01 right
+   ══════════════════════════════════════════════════════════════════ */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  /* margin-bottom: 8px; */
+}
+.content-align {
+  padding-left: 42px;
+}
+
+.header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.header-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 3px;
+  filter: invert(1) contrast(1.2);
+}
+/* .header-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: invert(1) contrast(1.2);
+  margin-top: 2px;
+} */
+
+/* .header-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+} */
+ .header-text-block {
+  max-width: 430px;
+}
+
+/* Title */
+.header-title {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 12pt;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+/* Description text */
+.header-desc {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  font-weight: 400;
+  color: #111;
+  line-height: 1;
+  max-width: 410px;
+}
+
+/* Page number */
+.page-number {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 9pt;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #333;
+  margin-top: 1px;
+}
+/* ══════════════════════════════════════════════════════════════════
+   INTENDED LINE
+   ══════════════════════════════════════════════════════════════════ */
+.intended-line {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  color: #000;
+  margin-bottom: 14px;
+  line-height: 1;
+  /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+.intended-line strong {
+  font-family: "TT Hoves", sans-serif;
+  font-weight: 700;
+  
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CONTACT BLOCK
+   ══════════════════════════════════════════════════════════════════ */
+.contact-block {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  row-gap: 1px;
+  margin-bottom: 16px;
+  /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+.contact-label {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  /* font-weight: 700; */
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #000;
+  line-height: 1;
+
+}
+
+.contact-value {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  color: #000;
+  line-height: 1;
+}
+
+/* span full row for "FOR CONTACT PURPOSE" label */
+.contact-full {
+  grid-column: 1 / -1;
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  /* font-weight: 700; */
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 1px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROJECT NAME BANNER
+   ══════════════════════════════════════════════════════════════════ */
+.project-banner {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: #000;
+  margin-bottom: 24px;
+  /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TIMELINE TABLE
+   DESCRIPTION  |  TIMELINE  |  HOURS
+   ══════════════════════════════════════════════════════════════════ */
+.timeline-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+  /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+.timeline-table thead th {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  text-align: left;
+  padding: 7px 0;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+.timeline-table thead th:not(.th-desc) {
+  text-align: center;
+  
+}
+
+.timeline-table tbody tr td {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  padding: 8px 0;
+  border-bottom: 0.5px solid #ccc;
+  vertical-align: middle;
+  text-align: left;
+  
+}
+
+.timeline-table tbody tr td:not(.td-desc) {
+  text-align: center;
+   /* margin-top: 5px;
+  margin-left: 38px; */
+}
+
+/* Blank filler rows */
+.timeline-table .blank-row td {
+  border-bottom: 0.5px solid #e8e8e8;
+  padding: 10px 0;
+}
+
+/* Column widths */
+.th-desc, .td-desc { width: 64%; }
+.th-tl,   .td-tl   { width: 18%; }
+.th-hrs,  .td-hrs  { width: 18%; }
+
+/* ══════════════════════════════════════════════════════════════════
+   TOTALS BLOCK  — right-aligned, below table
+   ══════════════════════════════════════════════════════════════════ */
+.totals-section {
+  margin-top: 0;
+  border-top: 1px solid #000;
+  padding-top: 0;
+  
+}
+
+.totals-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  border-bottom: 0.5px solid #ccc;
+}
+
+.totals-label {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  /* font-weight: 700; */
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: right;
+  padding: 6px 0;
+  padding-right: 14px;
+  width: 220px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.totals-value {
+  font-family: "TT Hoves", sans-serif;
+  font-size: 10pt;
+  text-align: right;
+  padding: 6px 0;
+  width: 130px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.totals-section .bottom-border {
+  border-top: 1px solid #000;
+  margin-top: 0;
+  height: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   FOOTER — big makewithus® wordmark exactly like invoice
+   ══════════════════════════════════════════════════════════════════ */
+.footer-spacer { display: none; }
+
+.page-footer {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0.85;
+  padding: 0;
+  margin: 0 0mm;          /* bleed to page edges */
+  width: calc(100% + 26mm);
+}
+
+/* .footer-wordmark {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 108px;
+  letter-spacing: -5px;
+  color: #000;
+  display: block;
+  line-height: 0.88;
+  padding: 0 13mm;
+  white-space: nowrap;
+} */
+ .footer-wordmark {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;   /* thinner look */
+  font-size: 150px;
+  letter-spacing: -8px;
+  color: #000;
+  display: block;
+  line-height: 0.85;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  text-align: left;
+  padding-left: 0;
+  transform: scaleY(1.02);
+}
+.footer-reg {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 44px;      /* smaller */
+  font-weight: 400;     /* thinner */
+  position: relative;
+  top: -3px;           /* move upward */
+  left: -6px;           /* bring closer to 's' */
+  vertical-align: top;
+  line-height: 1;
+}
+/* .footer-reg {
+  font-size: 44px;
+  font-weight: 900;
+  vertical-align: super;
+  letter-spacing: 0;
+  margin-left: -2px;
+  margin-bottom: 10px;
+} */
+
+/* ── Edit ring ──────────────────────────────────────────────────── */
+[contenteditable]:focus {
+  outline: 1.5px dashed #000;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* @media print {
+  body { margin: 0; }
+  .page { width: 100%; min-height: 297mm; }
+  [contenteditable] { outline: none !important; }
+} */
+ @media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html, body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+  }
+  [contenteditable] {
+    outline: none !important;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ PAGE HEADER ══════════════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="header-left">
+      <!-- <img
+  class="header-logo"
+  src="/static/images/logo.png"
+  alt="makewithus logo"
+/> -->
+<img
+  src="/static/images/logo.png"
+  class="header-logo"
+  alt="logo"
+/>
+      <div class="header-text-block">
+        <div class="header-title">Project Timeline &amp; Onboarding</div>
+        <div class="header-desc">
+          makewithus™ is Tech based service consultation company providing
+          complex digital systems and development assistance to everybody
+        </div>
+      </div>
+    </div>
+    <div class="page-number">PAGE {{ page_number if page_number else '01' }}</div>
+  </div>
+<div class="content-align">
+  <!-- ══ INTENDED LINE ════════════════════════════════════════════ -->
+  <div class="intended-line">
+    This document is intended to <strong contenteditable="true">{{ client_name if client_name else 'Mr/Mrs Client Name' }}.</strong>
+  </div>
+
+  <!-- ══ CONTACT BLOCK ════════════════════════════════════════════ -->
+  <div class="contact-block">
+    <span class="contact-full">FOR CONTACT PURPOSE</span>
+    <span class="contact-label">TEL</span>
+    <span class="contact-value">+91 88385 14202</span>
+    <span class="contact-label">EMAIL</span>
+    <span class="contact-value">contact@makewithus.in</span>
+    <span class="contact-label">WWW</span>
+    <span class="contact-value">makewithus.in</span>
+  </div>
+
+  <!-- ══ PROJECT BANNER ═══════════════════════════════════════════ -->
+  <div class="project-banner">
+    <strong>{{ project_name if project_name else 'PROJECT NAME' }}:</strong>
+    <span contenteditable="true"> {{ project_description if project_description else 'SHORT DESCRIPTION' }}</span>
+  </div>
+
+  <!-- ══ TIMELINE TABLE ═══════════════════════════════════════════ -->
+  <table class="timeline-table">
+    <thead>
+      <tr>
+        <th class="th-desc">DESCRIPTION</th>
+        <th class="th-tl">TIMELINE</th>
+        <th class="th-hrs">HOURS</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for item in (timeline_items or []) %}
+      <tr>
+        <td class="td-desc" contenteditable="true">{{ item.description | upper }}</td>
+        <td class="td-tl"   contenteditable="true">{{ item.timeline if item.timeline else 'XX' }}</td>
+        <td class="td-hrs"  contenteditable="true">{{ item.hours    if item.hours    else 'XX' }}</td>
+      </tr>
+      {% endfor %}
+
+      <!-- Filler blank rows — always show at least 11 rows total -->
+      {% set item_count = (timeline_items or []) | length %}
+
+{% for i in range([1- item_count, 0] | max) %}
+      <tr class="blank-row">
+        <td class="td-desc" contenteditable="true">&nbsp;</td>
+        <td class="td-tl"></td>
+        <td class="td-hrs"></td>
+      </tr>
+      {% endfor %}
+
+      <!-- Extra spacer rows (the 4 blank lines seen in the design) -->
+      {% for i in range(0) %}
+      <tr class="blank-row">
+        <td class="td-desc">&nbsp;</td>
+        <td class="td-tl"></td>
+        <td class="td-hrs"></td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  
+  </table>
+  
+
+  <!-- ══ TOTALS BLOCK ═════════════════════════════════════════════ -->
+  <div class="totals-section">
+
+    <div class="totals-row">
+      <div class="totals-label">TOTAL TIME</div>
+      <div class="totals-value" contenteditable="true">{{ total_time if total_time else 'XX DAYS' }}</div>
+    </div>
+
+    <div class="totals-row">
+      <div class="totals-label">EXPECTED PROJECT<br/>DEVELOPMENT TIME</div>
+      <div class="totals-value" contenteditable="true">{{ expected_dev_time if expected_dev_time else 'XX DAYS' }}</div>
+    </div>
+
+    <div class="totals-row" style="border-bottom: 1px solid #000;">
+      <div class="totals-label">EXPECTED PROJECT<br/>CLOSURE</div>
+      <div class="totals-value">
+        <div contenteditable="true">{{ expected_closure if expected_closure else 'XX DAYS' }}</div>
+        <div contenteditable="true" style="margin-top:2px">{{ closure_date if closure_date else 'DATE DD MM YYYY' }}</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <!-- ══ SPACER ═══════════════════════════════════════════════════ -->
+  <div class="footer-spacer"></div>
+
+  <!-- ══ FOOTER — big makewithus® ════════════════════════════════ -->
+  <div class="page-footer">
+    <span class="footer-wordmark">makewithus<span class="footer-reg">®</span></span>
+  </div>
+
+</div>
+<script>
+  window.addEventListener("load", function () {
+    document.fonts.ready.then(function () {
+      setTimeout(function () {
+        window.print();
+      }, 1000);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+
+
+
+{
+  "type": "timeline",
+  "label": "Project Timeline & Onboarding",
+  "fields": [
+    {
+      "name": "client_name",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "project_name",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "project_short_desc",
+      "type": "string",
+      "required": true,
+      "note": "Short description shown after project name"
+    },
+
+    {
+      "name": "phases",
+      "type": "array",
+      "required": true,
+      "label": "Project Phases",
+      "items": {
+        "type": "object",
+        "fields": [
+          {
+            "name": "description",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "timeline",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "hours",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    },
+
+    {
+      "name": "total_time",
+      "type": "string",
+      "required": true,
+      "note": "e.g. 30 DAYS"
+    },
+
+    {
+      "name": "expected_dev_time",
+      "type": "string",
+      "required": true,
+      "note": "e.g. 25 DAYS"
+    },
+
+    {
+      "name": "expected_closure",
+      "type": "string",
+      "required": true,
+      "note": "e.g. 30 DAYS"
+    },
+
+    {
+      "name": "closure_date",
+      "type": "string",
+      "required": false,
+      "note": "e.g. 25 June 2026"
+    }
+  ]
+}
+

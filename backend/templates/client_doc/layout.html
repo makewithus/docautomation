@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Proposal — {{ client_name }}</title>
+<style>
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/extrabold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* 
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    color: #000;
+    background: #fff;
+    font-size: 11px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  } */
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    /* background: #d9d9d9; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  .content-align {
+  padding-left: 42px;
+}
+
+  /* ── SHARED PAGE SHELL ───────────────────────────────────────────── */
+  /* .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 0;
+    page-break-after: always;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  } */
+
+  .page {
+    width: 210mm;
+    height: 297mm;   /* fixed page height */
+    padding: 0;
+    page-break-after: always;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+  /* ── TOP HEADER (same on every page) ────────────────────────────── */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 18px 24px 14px;
+    /* border-bottom: 1px solid #000; */
+  }
+
+  .header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-logo {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .header-text-block { }
+
+  .header-title {
+    font-size: 12.4pt;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1;
+  }
+
+  .header-desc {
+    font-size: 10pt;
+    font-weight: 400;
+    color: #333;
+    max-width: 450px;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  .header-intended {
+    font-size: 10pt;
+    margin-top: 6px;
+    line-height: 2;
+  }
+
+  .header-intended strong {
+    font-weight: 700;
+  }
+
+  .header-page-num {
+    font-size: 10pt;
+    font-weight: 400;
+    color: #000;
+    white-space: nowrap;
+  }
+
+  /* ── CONTACT BLOCK ───────────────────────────────────────────────── */
+  /* .contact-block {
+    padding: 12px 24px 0;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    row-gap: 1px;
+    font-size: 10pt;
+    line-height: 1;
+  }
+
+  .contact-block .label {
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  } */
+
+  .contact-block {
+    padding: 12px 24px 0;
+    display: grid;
+    grid-template-columns: 110px 1fr; /* width badha di */
+    row-gap: 1px;
+    font-size: 10pt;
+    line-height: 1;
+}
+
+.contact-block .label {
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    white-space: nowrap; /* line break stop */
+}
+  /* ── PAGE CONTENT AREA ───────────────────────────────────────────── */
+  .page-body {
+    flex: 1;
+    padding: 24px 24px 0;
+  }
+
+  /* ── ADDRESS BLOCK (page 1) ──────────────────────────────────────── */
+  .address-block {
+    margin-top: 160px;
+    font-size: 10pt;
+    line-height: 1;
+  }
+
+  .address-block p {
+    margin: 0;
+  }
+
+  /* ── SALUTATION + LETTER BODY ────────────────────────────────────── */
+  .salutation {
+    margin-top: 20px;
+    font-size: 10pt;
+  }
+
+  .letter-body {
+    margin-top: 14px;
+    font-size: 10pt;
+    line-height: 1;
+  }
+
+  .letter-body p {
+    margin-bottom: 10px;
+  }
+
+  .sample-note {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    color: #555;
+  }
+
+  /* ── SIGN-OFF ────────────────────────────────────────────────────── */
+  .signoff {
+    margin-top: 20px;
+    font-size: 10pt;
+  }
+
+  .signature-area {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    height: 44px;
+  }
+
+  /* .sender-name {
+    font-size: 10pt;
+    font-weight: 700;
+  } */
+
+  .sender-title {
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  /* ── BIG FOOTER LOGO ─────────────────────────────────────────────── */
+  /* .footer-logo {
+    margin-top: auto;
+    padding: 0 0 0 0;
+    line-height: 0.85;
+    overflow: hidden;
+  } */
+   .footer-logo {
+    position: absolute;
+    bottom: 20px;     /* bottom fixed */
+    left: 10px;
+    width: 100%;
+    line-height: 0.85;
+}
+
+  .footer-logo-text {
+    /* font-size: 92px;
+    font-weight: 900;
+    letter-spacing: -5px;
+    color: #000;
+    display: block;
+    padding: 0 18px;
+    position: relative; */
+     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 350;   /* thinner look */
+  font-size: 150px;
+  letter-spacing: -8px;
+  color: #000;
+  display: block;
+  line-height: 0.85;
+  white-space: nowrap;
+  text-align: left;
+  padding-left: 0;
+  transform: scaleY(1.02);
+  }
+
+  .footer-logo-reg {
+    /* font-size: 40px;
+    font-weight: 900;
+    vertical-align: super;
+    letter-spacing: 0; */
+     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 44px;      /* smaller */
+  font-weight: 400;     /* thinner */
+  position: relative;
+  top: -3px;           /* move upward */
+  left: -6px;           /* bring closer to 's' */
+  vertical-align: top;
+  line-height: 1;
+  }
+
+  /* ── PAGE 2 — QUOTATION BLOCK ────────────────────────────────────── */
+  .quote-meta {
+    margin-top: 28px;
+    margin-bottom: 28px;
+  }
+
+  .quote-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 2px;
+  }
+
+  .quote-meta-label {
+    font-size: 34px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    min-width: 160px;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  .quote-meta-value {
+    font-size: 34px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  /* ── QUOTATION TABLE ─────────────────────────────────────────────── */
+  .quote-project-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .quote-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  .quote-table thead tr th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-align: left;
+    padding: 6px 0 6px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+
+  .quote-table thead tr th:not(:first-child) {
+    text-align: right;
+  }
+
+  .quote-table tbody tr td {
+    padding: 8px 0;
+    font-size: 11px;
+    vertical-align: top;
+    border-bottom: 0.5px solid #ddd;
+  }
+
+  .quote-table tbody tr td:not(:first-child) {
+    text-align: right;
+  }
+
+  /* Line items rows */
+  .quote-table .item-row td {
+    border-bottom: 0.5px solid #eee;
+  }
+
+  /* Totals section */
+  .quote-table .total-row td {
+    padding: 5px 0;
+    border-bottom: 0.5px solid #ddd;
+    font-size: 11px;
+  }
+
+  .quote-table .total-row.grand td {
+    font-weight: 700;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 6px 0;
+  }
+
+  .quote-table .total-row td:first-child {
+    visibility: hidden;
+  }
+
+  .quote-table .total-label {
+    text-align: right;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding-right: 16px;
+  }
+
+  .quote-table .total-amount {
+    text-align: right;
+    min-width: 80px;
+  }
+
+  /* ── TERMS NOTE ──────────────────────────────────────────────────── */
+  .terms-note {
+    margin-top: 14px;
+    font-size: 10px;
+    color: #333;
+  }
+
+  .terms-note a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* ── PRINT ───────────────────────────────────────────────────────── */
+  /* @media print {
+    .page { page-break-after: always; min-height: 297mm; }
+  } */
+   @media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html, body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+  }
+  [contenteditable] {
+    outline: none !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1 — LETTER -->
+<div class="page">
+
+  <!-- Shared header -->
+  <div class="page-header">
+    <div class="header-left">
+      <img
+  class="header-logo"
+  src="/static/images/logo.png"
+  alt="makewithus logo"
+/>
+      <!-- <svg class="header-logo" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 4 L22 40 M4 22 L40 22 M7.5 7.5 L36.5 36.5 M36.5 7.5 L7.5 36.5"
+          stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+      </svg> -->
+      <div class="header-text-block">
+        <div class="header-title">PROJECT PROPOSAL</div>
+        <div class="header-desc">makewithus™ is Tech based service consultation company providing complex digital systems and development assistance to everybody</div>
+        <div class="header-intended">This Project Proposal letter is intended to <strong>Mr/Mrs {{ client_name }}.</strong></div>
+      </div>
+    </div>
+    <div class="header-page-num">PAGE 01</div>
+  </div>
+  <div class="content-align">
+  <!-- Contact block -->
+  <div class="contact-block">
+    <span class="label">FOR CONTACT PURPOSE</span><span></span>
+    <span class="label">TEL</span><span>+91 88385 14202</span>
+    <span class="label">EMAIL</span><span>contact@makewithus.in</span>
+    <span class="label">WWW</span><span>makewithus.in</span>
+  </div>
+
+  <!-- Letter body -->
+  <div class="page-body">
+
+    <!-- Address block -->
+    <div class="address-block">
+      <p>{{ client_name }}</p>
+      <p>{{ client_organisation }}</p>
+      <p>{{ client_place }}</p>
+      <p>{{ date }}</p>
+    </div>
+
+    <!-- Salutation -->
+    <div class="salutation">Dear Client,</div>
+
+    <!-- Letter content -->
+    <div class="letter-body">
+      {% for paragraph in body_paragraphs %}
+      <p>{{ paragraph }}</p>
+      {% endfor %}
+    </div>
+
+    <!-- <div class="sample-note">SAMPLE CONTENT SHOULD BE ABLE TO CHANGE</div> -->
+
+    <!-- Sign-off -->
+    <div class="signoff">Sincerely,</div>
+
+    <!-- Signature placeholder -->
+    <div class="signature-area">
+      <!-- Signature image goes here if available -->
+    </div>
+
+    <!-- <div class="sender-name"></div> -->
+    <div class="sender-title"><b>Mohammed Sherhan <br>CEO makewithus®</b></div>
+
+  </div>
+  </div>
+
+  <!-- Big footer logo -->
+  <div class="footer-logo">
+    <span class="footer-logo-text">makewithus<span class="footer-logo-reg">®</span></span>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 2 — QUOTATION -->
+<div class="page">
+
+  <!-- Shared header (same as page 1) -->
+  <div class="page-header">
+    <div class="header-left">
+      <!-- <svg class="header-logo" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 4 L22 40 M4 22 L40 22 M7.5 7.5 L36.5 36.5 M36.5 7.5 L7.5 36.5"
+          stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+      </svg> -->
+      <img
+  class="header-logo"
+  src="/static/images/logo.png"
+  alt="makewithus logo"
+/>
+      <div class="header-text-block">
+        <div class="header-title">PROJECT PROPOSAL</div>
+        <div class="header-desc">makewithus™ is Tech based service consultation company providing complex digital systems and development assistance to everybody</div>
+        <div class="header-intended">This Project Proposal letter is intended to <strong>Mr/Mrs {{ client_name }}.</strong></div>
+      </div>
+    </div>
+    <div class="header-page-num">PAGE 02</div>
+  </div>
+
+  <!-- Contact block -->
+   <div class="content-align">
+  <div class="contact-block">
+    <span class="label">FOR CONTACT PURPOSE</span><span></span>
+    <span class="label">TEL</span><span>+91 88385 14202</span>
+    <span class="label">EMAIL</span><span>contact@makewithus.in</span>
+    <span class="label">WWW</span><span>makewithus.in</span>
+  </div>
+
+  <!-- Quotation meta -->
+  <div class="page-body">
+
+    <div class="quote-meta">
+      <div class="quote-meta-row">
+        <span class="quote-meta-label">Quotation:</span>
+        <span class="quote-meta-value">{{ quotation_number }}</span>
+      </div>
+      <div class="quote-meta-row">
+        <span class="quote-meta-label">For:</span>
+        <span class="quote-meta-value">{{ client_name }}</span>
+      </div>
+      <div class="quote-meta-row">
+        <span class="quote-meta-label">Issued:</span>
+        <span class="quote-meta-value">{{ date }}</span>
+      </div>
+    </div>
+
+    <!-- Quotation table -->
+    <div class="quote-project-name">{{ project_name }}</div>
+
+    <table class="quote-table">
+      <thead>
+        <tr>
+          <th style="width:50%">DESCRIPTION</th>
+          <th style="width:15%">HOURS</th>
+          <th style="width:17%">UNIT PRICE</th>
+          <th style="width:18%">AMOUNT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Line items -->
+        {% for item in line_items %}
+        <tr class="item-row">
+          <td>{{ item.description }}</td>
+          <td style="text-align:right">{{ item.hours }}</td>
+          <td style="text-align:right">{{ item.unit_price }}</td>
+          <td style="text-align:right">{{ item.amount }}</td>
+        </tr>
+        {% endfor %}
+
+        <!-- Spacer row -->
+        <tr><td colspan="4" style="padding:4px 0;border:none"></td></tr>
+
+        <!-- Subtotal -->
+        <tr class="total-row">
+          <td colspan="2"></td>
+          <td class="total-label">SUBTOTAL</td>
+          <td class="total-amount">{{ subtotal }}</td>
+        </tr>
+
+        <!-- GST -->
+        <tr class="total-row">
+          <td colspan="2"></td>
+          <td class="total-label">GST</td>
+          <td class="total-amount">{{ gst_amount }}</td>
+        </tr>
+
+        <!-- Total -->
+        <tr class="total-row grand">
+          <td colspan="2"></td>
+          <td class="total-label">TOTAL</td>
+          <td class="total-amount">{{ total }}</td>
+        </tr>
+
+      </tbody>
+      </div>
+    </table>
+
+    <div class="terms-note">
+      By accepting this quotation you are agreeing to our terms and conditions at
+      <a href="https://makewithus.in/terms">makewithus.in/terms</a>
+    </div>
+
+  </div>
+
+  <!-- Big footer logo -->
+  <div class="footer-logo">
+    <span class="footer-logo-text">makewithus<span class="footer-logo-reg">®</span></span>
+  </div>
+
+</div>
+<script>
+  window.addEventListener("load", function () {
+    document.fonts.ready.then(function () {
+      setTimeout(function () {
+        window.print();
+      }, 1000);
+    });
+  });
+</script>
+
+
+</body>
+</html>

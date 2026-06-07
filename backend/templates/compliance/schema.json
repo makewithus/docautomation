@@ -1,0 +1,137 @@
+{
+  "type": "compliance",
+  "label": "Service Provision Agreement",
+  "fields": [
+    {
+      "name": "client_name",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "purpose_paragraphs",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "provider_obligations",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "client_obligations",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "payment_commitment_intro",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "payment_commitment_points",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "payment_commitment_note",
+      "type": "string",
+      "required": false
+    },
+
+    {
+      "name": "phase_payment_intro",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "phase_payment_points",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "payment_phases",
+      "type": "array",
+      "required": true,
+      "description": "Expected project cycle payment table",
+      "items": {
+        "type": "object",
+        "fields": [
+          {
+            "name": "phase",
+            "type": "string",
+            "required": true,
+            "description": "Payment phase name like ADVANCE PAYMENT, MIDWAY PAYMENT, FINAL PAYMENT"
+          },
+          {
+            "name": "timeline",
+            "type": "string",
+            "required": true,
+            "description": "Timeline such as BEFORE PROJECT START, DURING DEVELOPMENT, WITHIN 7 DAYS OF DELIVERY"
+          },
+          {
+            "name": "amount",
+            "type": "string",
+            "required": true,
+            "description": "Payment percentage like 30%, 40%, 30%"
+          }
+        ]
+      }
+    },
+
+    {
+      "name": "delayed_payment_intro",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "delayed_payment_points",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "delayed_payment_note",
+      "type": "string",
+      "required": false
+    },
+
+    {
+      "name": "professional_understanding_intro",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "professional_understanding_points",
+      "type": "array",
+      "required": true
+    },
+
+    {
+      "name": "confidentiality_text",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "modifications_text",
+      "type": "string",
+      "required": true
+    },
+
+    {
+      "name": "acceptance_text",
+      "type": "string",
+      "required": true
+    }
+  ]
+}

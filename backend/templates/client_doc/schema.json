@@ -1,0 +1,22 @@
+{
+    "type":"client_doc",
+    "label":"Project Proposal",
+    "fields":[
+        {"name": "client_name", "type":"string","required":true},
+        {"name": "client_organisation", "type":"string","required":false},
+        {"name": "client_place", "type":"string","required":false},
+        {"name": "date", "type":"string","required":true},
+        {"name": "body_paragraphs", "type":"string","required":true,
+     "note": "Array of paragraph strings for the letter body"},
+        {"name": "sender_name", "type":"string","required":true},
+        {"name": "sender_desgination", "type":"string","required":true},
+        {"name": "quotation_number", "type":"string","required":true},
+        {"name": "project_name", "type":"string","required":true},
+        {"name": "line_items", "type":"array","required":true,
+     "note": "Each item: { description, hours, unit_price, amount }"},
+        {"name": "subtotal", "type":"string","required":true},
+        {"name": "gst_amount", "type":"string","required":true},
+        {"name": "total", "type":"string","required":true}
+        
+    ]
+}

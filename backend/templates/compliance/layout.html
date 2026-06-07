@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Service Agreement — {{ client_name }}</title>
+<style>
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'TT Hoves';
+  src: url('/static/fonts/tt_hoves_pro/extrabold.ttf') format('truetype');
+  font-weight: 800;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  background:#efefef;
+  font-family:'TT Hoves', sans-serif;
+  color:#000;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.content-align { padding-left: 49px; }
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  background: #fff;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  break-after: page;
+  page-break-after: always;
+}
+.page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.content { padding: 22px 26px 0 26px; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.header-left { display: flex; gap: 12px; }
+.logo { width: 34px; height: 34px; object-fit: contain; margin-top: 1px; }
+.header-content { max-width: 620px; }
+.doc-title { font-size: 12pt; font-weight: 800; line-height: 1; letter-spacing: -0.5px; text-transform: uppercase; }
+.company-desc { margin-top: 4px; font-size: 10pt; line-height: 1.1; color: #222; max-width: 520px; }
+.intended-text { margin-top: 16px; font-size: 10pt; line-height: 1.3; }
+.intended-text strong { font-weight: 800; }
+.page-number { font-size: 10pt; font-weight: 500; white-space: nowrap; }
+
+.contact-block {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 165px 1fr;
+  row-gap: 1px;
+  width: 420px;
+}
+.contact-label { font-size: 10pt; line-height: 1.05; }
+.contact-value { font-size: 10pt; font-weight: 400; line-height: 1.05; }
+
+.party-block { margin-top: 24px; }
+.party-heading { font-size: 10pt; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+.party-name { font-size: 10pt; font-weight: 700; line-height: 1.15; }
+
+.section { margin-top: 58px; }
+.section-title { font-size: 12pt; font-weight: 700; text-transform: uppercase; margin-bottom: 22px; line-height: 1; }
+.paragraph { font-size: 10pt; line-height: 1; max-width: 980px; margin-bottom: 26px; color: #111; letter-spacing: -0.1px; }
+.paragraph li { line-height: 1; }
+.bullet-title { font-size: 9.9pt; margin-bottom: 1px; }
+.bullets { margin-left: 9.9pt; margin-top: 8px; }
+.bullets li { font-size: 9.9pt; line-height: 1; margin-bottom: 3px; }
+
+.footer {
+  margin-top: auto;
+  font-family: 'TT Hoves';
+  border-top: 1px solid #130f0f;
+  padding: 10px 26px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.footer-block { font-size: 11px; line-height: 1.1; }
+.footer-brand { text-align: center; }
+.footer-brand-small { font-size: 11px; }
+.footer-brand-big { font-size: 16px; font-weight: 800; text-transform: uppercase; }
+
+.payment-section { margin-top: 30px; }
+.payment-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.payment-table thead th {
+  text-align: left;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 9px 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+.payment-table tbody td {
+  border-bottom: 0.5px solid #d9d9d9;
+  padding: 11px 0;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.payment-table td:last-child,
+.payment-table th:last-child { text-align: right; }
+
+.signature-section {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 80px;
+  width: 100%;
+}
+.signature-block { width: 46%; }
+.sign-title { font-size: 10pt; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; letter-spacing: -0.2px; }
+.sign-line { border-top: 1px solid #000; width: 100%; margin-bottom: 10px; }
+.sign-name { font-size: 10pt; font-weight: 700; line-height: 1.2; }
+.sign-role { font-size: 9pt; line-height: 1.2; color: #444; margin-top: 2px; }
+
+.logo-page {
+  width: 100%;
+  height: 297mm;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #fff;
+}
+.center-logo { width: 180px; height: auto; object-fit: contain; }
+
+@page { size: A4; margin: 0; }
+
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    background: #fff;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ================================== PAGE 1 =================================== -->
+<div class="page">
+  <div class="content">
+
+    <div class="page-header">
+      <div class="header-left">
+        <img src="/static/images/logo.png" class="logo" alt="logo" />
+        <div class="header-content">
+          <div class="doc-title">SERVICE PROVISION AGREEMENT</div>
+          <div class="company-desc">makewithus™ is Tech based service consultation company providing complex digital systems and development assistance to everybody</div>
+          <div class="intended-text">This agreement is intended to <strong>Mr/Mrs {{ client_name }}</strong> from makewithus.</div>
+        </div>
+      </div>
+      <div class="page-number">PAGE 01</div>
+    </div>
+
+    <div class="content-align">
+      <div class="contact-block">
+        <div class="contact-label">FOR CONTACT PURPOSE</div><div></div>
+        <div class="contact-label">TEL</div><div class="contact-value">{{ company_phone or '+91 88385 14202' }}</div>
+        <div class="contact-label">EMAIL</div><div class="contact-value">{{ company_email or 'contact@makewithus.in' }}</div>
+        <div class="contact-label">WWW</div><div class="contact-value">{{ company_website or 'makewithus.in' }}</div>
+      </div>
+
+      <div class="party-block">
+        <div class="party-heading">SERVICE PROVIDED BY:</div>
+        <div class="party-name">{{ provider_name or 'MAKEWITHUS PVT LTD' }}</div>
+      </div>
+
+      <div class="party-block">
+        <div class="party-heading">CLIENT/PROJECT PARTNER:</div>
+        <div class="party-name">{{ client_name }}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">PURPOSE OF AGREEMENT</div>
+        <div class="paragraph">This Agreement is intended to establish a clear and professional understanding regarding project execution, payment timelines, delivery responsibilities, and operational coordination between the Client and the Service Provider.</div>
+        <div class="paragraph">The Service Provider commits to delivering assigned projects, services, software solutions, design works, or development tasks within agreed timelines and quality standards. In return, the Client agrees to maintain timely payment schedules to ensure uninterrupted project execution and operational stability.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">PROJECT EXECUTION</div>
+        <div class="bullet-title">The Service Provider agrees to:</div>
+        <ul class="bullets">
+          <li>Begin work only after confirmation of project scope and approval.</li>
+          <li>Deliver milestones and final outputs within the mutually agreed timeline.</li>
+          <li>Maintain professional communication and project updates.</li>
+          <li>Provide revisions and support as discussed per project basis.</li>
+        </ul>
+        <br>
+        <div class="bullet-title">The Client agrees to:</div>
+        <ul class="bullets">
+          <li>Provide all necessary project details, content, approvals, and communication required for smooth execution.</li>
+          <li>Avoid unnecessary delays in confirmations or approvals that affect project timelines.</li>
+          <li>Respect the operational workflow and resource allocation of the Service Provider.</li>
+        </ul>
+      </div>
+
+      <div class="section payment-section">
+        <div class="section-title">PAYMENT TERMS</div>
+        <div class="bullet-title"><strong>Payment Commitment:</strong></div>
+        <div class="paragraph">
+          <p>The Client agrees that all project payments shall be completed either:</p>
+          <li>In full upon delivery, OR</li>
+          <li>Within a maximum period of 7 days from the date of delivery/invoice</li>
+          <p>unless otherwise agreed in writing before project initiation.</p>
+        </div>
+        <div class="bullet-title"><strong>Phase Payments:</strong></div>
+        <div class="paragraph">
+          <p>Phase-wise or split payments are acceptable under this Agreement only if:</p>
+          <li>The complete payment schedule is pre-defined and mutually approved.</li>
+          <li>All phases are completed strictly within the agreed timeline.</li>
+          <li>Delayed or indefinite phased payments shall not be permitted without prior written approval from the Service Provider.</li>
+        </div>
+      </div>
+    </div><!-- end content-align -->
+
+  </div><!-- end content -->
+
+  <div class="footer">
+    <div class="footer-block"><b>CONTACT@MAKEWITHUS.IN</b><br><b>+91 88385 14202</b></div>
+    <div class="footer-brand">
+      <div class="footer-brand-small">makewithus</div>
+      <div class="footer-brand-big">MAKEWITHUS.IN</div>
+    </div>
+    <div class="footer-block" style="text-align:right;">TRIVANDRUM, KERALA<br>INDIA</div>
+  </div>
+</div>
+
+<!-- ================================== PAGE 2 =================================== -->
+<div class="page">
+  <div class="content">
+
+    <div class="page-header">
+      <div class="header-left">
+        <img src="/static/images/logo.png" class="logo" alt="logo" />
+        <div class="header-content">
+          <div class="doc-title">SERVICE PROVISION AGREEMENT</div>
+          <div class="company-desc">makewithus™ is Tech based service consultation company providing complex digital systems and development assistance to everybody</div>
+          <div class="intended-text">This agreement is intended to <strong>Mr/Mrs {{ client_name }}</strong> from makewithus.</div>
+        </div>
+      </div>
+      <div class="page-number">PAGE 02</div>
+    </div>
+
+    <div class="content-align">
+      <div class="contact-block">
+        <div class="contact-label">FOR CONTACT PURPOSE</div><div></div>
+        <div class="contact-label">TEL</div><div class="contact-value">{{ company_phone or '+91 88385 14202' }}</div>
+        <div class="contact-label">EMAIL</div><div class="contact-value">{{ company_email or 'contact@makewithus.in' }}</div>
+        <div class="contact-label">WWW</div><div class="contact-value">{{ company_website or 'makewithus.in' }}</div>
+      </div>
+
+      <div class="section" style="margin-top:70px;">
+        <div class="section-title">PAYMENT CYCLE</div>
+        <table class="payment-table">
+          <thead>
+            <tr>
+              <th>PHASE</th>
+              <th>TIMELINE</th>
+              <th>PAYMENT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ADVANCE PAYMENT</td>
+              <td>BEFORE PROJECT START</td>
+              <td>30%</td>
+            </tr>
+            <tr>
+              <td>MIDWAY PAYMENT</td>
+              <td>DURING DEVELOPMENT</td>
+              <td>40%</td>
+            </tr>
+            <tr>
+              <td>FINAL PAYMENT</td>
+              <td>WITHIN 7 DAYS OF DELIVERY</td>
+              <td>30%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" style="margin-top:52px;">
+        <div class="section-title">DELAYED PAYMENT</div>
+        <div class="paragraph">
+          <p>If payments are delayed beyond the agreed timeline:</p>
+          <li>The Service Provider reserves the right to pause ongoing work and future deliverables.</li>
+          <li>Support, maintenance, updates, hosting, deployment, or additional services may be temporarily withheld until dues are cleared.</li>
+          <li>Repeated delays may lead to revision of project terms for future collaborations.</li>
+          <br>
+          <p>This clause is included solely to maintain operational efficiency and resource management within the company.</p>
+        </div>
+      </div>
+
+      <div class="section" style="margin-top:40px;">
+        <div class="section-title">PROFESSIONAL UNDERSTANDING</div>
+        <div class="paragraph">
+          <p>Both parties acknowledge that:</p>
+          <li>The relationship is based on mutual trust, professionalism, and long-term collaboration.</li>
+          <li>Timely payments are essential for maintaining internal company operations, salaries, infrastructure, and project execution efficiency.</li>
+          <li>This Agreement is created to avoid misunderstandings and ensure smooth future collaborations.</li>
+        </div>
+      </div>
+    </div><!-- end content-align -->
+
+  </div><!-- end content -->
+
+  <div class="footer">
+    <div class="footer-block"><b>CONTACT@MAKEWITHUS.IN</b><br><b>+91 88385 14202</b></div>
+    <div class="footer-brand">
+      <div class="footer-brand-small">makewithus</div>
+      <div class="footer-brand-big">MAKEWITHUS.IN</div>
+    </div>
+    <div class="footer-block" style="text-align:right;">TRIVANDRUM, KERALA<br>INDIA</div>
+  </div>
+</div>
+
+<!-- ================================== PAGE 3 =================================== -->
+<div class="page">
+  <div class="content">
+
+    <div class="page-header">
+      <div class="header-left">
+        <img src="/static/images/logo.png" class="logo" alt="logo" />
+        <div class="header-content">
+          <div class="doc-title">SERVICE PROVISION AGREEMENT</div>
+          <div class="company-desc">makewithus™ is Tech based service consultation company providing complex digital systems and development assistance to everybody</div>
+          <div class="intended-text">This agreement is intended to <strong>Mr/Mrs {{ client_name }}</strong> from makewithus.</div>
+        </div>
+      </div>
+      <div class="page-number">PAGE 03</div>
+    </div>
+
+    <div class="content-align">
+      <div class="contact-block">
+        <div class="contact-label">FOR CONTACT PURPOSE</div><div></div>
+        <div class="contact-label">TEL</div><div class="contact-value">{{ company_phone or '+91 88385 14202' }}</div>
+        <div class="contact-label">EMAIL</div><div class="contact-value">{{ company_email or 'contact@makewithus.in' }}</div>
+        <div class="contact-label">WWW</div><div class="contact-value">{{ company_website or 'makewithus.in' }}</div>
+      </div>
+
+      <div class="section" style="margin-top:20px;">
+        <div class="section-title">CONFIDENTIALITY</div>
+        <div class="paragraph">Any business information, project details, pricing structures, software systems, client data, or operational processes shared between both parties shall remain confidential unless otherwise authorized.</div>
+      </div>
+
+      <div class="section" style="margin-top:42px;">
+        <div class="section-title">MODIFICATIONS</div>
+        <div class="paragraph">Any modifications to this Agreement must be discussed and mutually agreed upon by both parties.</div>
+      </div>
+
+      <div class="section" style="margin-top:42px;">
+        <div class="section-title">ACCEPTANCE</div>
+        <div class="paragraph">By signing below, both parties confirm that they understand and agree to the terms mentioned in this Agreement.</div>
+      </div>
+
+      <div class="signature-section">
+        <div class="signature-block">
+          <div class="sign-title">SERVICE PROVIDER</div>
+          <div class="sign-line"></div>
+          <div class="sign-name">{{ provider_name or 'MAKEWITHUS' }}</div>
+          <div class="sign-role">{{ provider_role or 'Authorized Representative' }}</div>
+        </div>
+        <div class="signature-block">
+          <div class="sign-title">CLIENT SIGNATURE</div>
+          <div class="sign-line"></div>
+          <div class="sign-name">{{ client_name }}</div>
+          <div class="sign-role">{{ client_designation or 'Client Representative' }}</div>
+        </div>
+      </div>
+    </div><!-- end content-align -->
+
+  </div><!-- end content -->
+
+  <div class="footer">
+    <div class="footer-block"><b>CONTACT@MAKEWITHUS.IN</b><br>+91 88385 14202</div>
+    <div class="footer-brand">
+      <div class="footer-brand-small">makewithus</div>
+      <div class="footer-brand-big">MAKEWITHUS.IN</div>
+    </div>
+    <div class="footer-block" style="text-align:right;">TRIVANDRUM, KERALA<br>INDIA</div>
+  </div>
+</div>
+
+<!-- ================================== PAGE 4 — LOGO ONLY =================================== -->
+<div class="page">
+  <div class="logo-page">
+    <img src="/static/images/logo.png" alt="logo" class="center-logo" />
+  </div>
+</div>
+
+<script>
+  window.addEventListener("load", function () {
+    document.fonts.ready.then(function () {
+      setTimeout(function () {
+        window.print();
+      }, 1000);
+    });
+  });
+</script>
+
+</body>
+</html>
