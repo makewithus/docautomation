@@ -74,8 +74,9 @@ export default function Editor() {
 // };
 
 const handleDownloadPDF = () => {
+  const BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
   window.open(
-    `http://localhost:8000/api/doc/${id}/preview?autoprint=1`,
+    `${BASE}/api/doc/${id}/preview`,
     "_blank"
   );
 };
