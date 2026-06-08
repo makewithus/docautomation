@@ -326,8 +326,17 @@ export default function Home() {
 
               {/* Spinning asterisk */}
               <div style={s.genLogoWrap}>
-                <AsteriskIcon size={36} spinning />
-              </div>
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      width: "60px",
+      height: "60px",
+      objectFit: "contain",
+      animation: "spin 2s linear infinite",
+    }}
+  />
+</div>
 
               <div style={s.genTitle}>Generating your document</div>
               <div style={s.genSub}>This takes about 10–15 seconds</div>
