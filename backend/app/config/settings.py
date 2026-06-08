@@ -87,7 +87,8 @@ class Settings(BaseSettings):
     # ── Tesseract ─────────────────────────────────────────────────────
     # Windows path to tesseract.exe
     # Mac/Linux: leave as empty string — tesseract is found automatically
-    tesseract_cmd: str = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    # tesseract_cmd: str = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    tesseract_cmd: str = ""
     # ── Server ────────────────────────────────────────────────────────
     port: int = 8000
 
