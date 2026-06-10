@@ -147,10 +147,36 @@ from app.ml.validator        import validate_fields
 from app.engine.template_engine import fill_template
 from app.models.document     import Document
 from app.config.database     import get_db
+from pydantic import BaseModel
 import uuid
 
 router = APIRouter()
 
+class RefillRequest(BaseModel):
+    prompt: str
+
+@router.post("/doc/{doc_id}/refill")
+def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_db)):
+    """
+    User ke prompt se document ka content regenerate karo.
+    Naya document nahi banta — sirf content update hota hai.
+    """
+    doc = db.query(Document).filter(Document.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    # LLM se naya content generate karo
+    # from app.ml.llm_service import llm_service
+    new_content = llm_service.generate_document_content(
+        raw_text=body.prompt,
+        doc_type=doc.template_type,
+    )
+
+    # DB mein save karo
+    doc.content = new_content
+    db.commit()
+
+    return { "success": True, "content": new_content }
 
 @router.post("/generate", response_model=GenerateResponse)
 async def smart_generate(

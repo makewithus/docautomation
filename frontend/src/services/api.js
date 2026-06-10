@@ -21,6 +21,9 @@ const client = axios.create({
     "Content-Type": "application/json",
   },
 });
+// services/api.js mein add karo
+export const createDocument = (templateType) =>
+  client.post("/doc/create", { template_type: templateType });
 
 // ── Request interceptor — log in development ──────────────────────────────
 client.interceptors.request.use(
@@ -196,7 +199,9 @@ export const previewUrl = (docId) =>
 export const editUrl = (docId) =>
   `${window.location.origin}/doc/${docId}`;
 
-
+// services/api.js mein add karo
+export const refillDocument = (docId, prompt) =>
+  client.post(`/doc/${docId}/refill`, { prompt });
 
 // export const downloadPdfUrl = (id) => `${API}/doc/${id}/pdf`;
 

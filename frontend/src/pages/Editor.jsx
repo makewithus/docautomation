@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getDocument, updateDocument, previewUrl } from "../services/api";
+import { getDocument, updateDocument, previewUrl,refillDocument} from "../services/api";
 
 
 const TYPE_LABELS = {
@@ -25,6 +25,10 @@ export default function Editor() {
   const [copied, setCopied]   = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
   const [panelOpen, setPanelOpen] = useState(true);
+  const [prompt, setPrompt]       = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [promptOpen, setPromptOpen] = useState(false);
+  
   // const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
@@ -41,6 +45,7 @@ export default function Editor() {
     setContent(p => ({ ...p, [key]: val }));
     setDirty(true);
   };
+ 
 
   const handleSave = async () => {
     if (!dirty) return;
@@ -72,11 +77,61 @@ export default function Editor() {
 //     "width=900,height=700"
 //   );
 // };
+const handleRefill = async () => {
+  if (!prompt.trim()) return;
+  setGenerating(true);
+  try {
+    const res = await refillDocument(id, prompt);
 
+    console.log("AI response:", res.data);
+
+    // update frontend state
+    const generatedContent =
+      res.data.content ||
+      res.data.document?.content ||
+      res.data.data?.content;
+
+    if (!generatedContent) {
+      throw new Error("No content returned");
+    }
+
+    // fill form instantly
+    setContent(generatedContent);
+
+    // save to backend immediately
+    await updateDocument(id, generatedContent);
+
+    // refresh preview iframe
+    setIframeKey((k) => k + 1);
+
+    setDirty(false);
+    // const res = await refillDocument(id, prompt);
+    // setContent(res.data.content);
+    // setDirty(true);
+    // setIframeKey(k => k + 1);
+    // setPrompt("");
+    // setPromptOpen(false);
+  } catch (err) {
+    alert("Generation failed. Try again.");
+  } finally {
+    setGenerating(false);
+  }
+};
+
+// const handleDownloadPDF = () => {
+//   const BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+//   window.open(
+//     `${BASE}/api/doc/${id}/preview`,
+//     "_blank"
+//   );
+// };
 const handleDownloadPDF = () => {
-  const BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const BASE =
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:8000";
+
   window.open(
-    `${BASE}/api/doc/${id}/preview`,
+    `${BASE}/api/doc/${id}/preview?autoprint=1`,
     "_blank"
   );
 };
@@ -218,16 +273,45 @@ const handleDownloadPDF = () => {
       <div style={s.topbar}>
         <div style={s.topLeft}>
           {/* Logo */}
-          <a href="/" style={s.topLogo}>
+          {/* <a href="/" style={s.topLogo}>
             <AsteriskIcon size={16} />
-          </a>
+          </a> */}
           <div style={s.topDivider} />
           {/* Doc info */}
           <span style={s.docName}>{doc.project_name}</span>
           <TypeBadge type={doc.template_type} />
           {dirty && <span style={s.unsavedDot} title="Unsaved changes" />}
         </div>
+{/* ── AI Prompt Box ─────────────────────────────────── */}
+{/* <div style={s.promptBox}>
+  <button
+    style={s.promptToggle}
+    onClick={() => setPromptOpen(p => !p)}
+  >
+    ✦ {promptOpen ? "Close AI fill" : "Fill with AI prompt"}
+  </button>
 
+  {promptOpen && (
+    <div style={s.promptInner}>
+      <textarea
+        style={s.promptTextarea}
+        rows={4}
+        placeholder={
+          `Example:\n"Client: Rahul Sharma, Project: Ayurvedic app with AI skin analysis, 3 months, budget ₹5L, 40-30-30 payment split"`
+        }
+        value={prompt}
+        onChange={e => setPrompt(e.target.value)}
+      />
+      <button
+        style={generating ? s.btnGeneratingFull : s.btnGenerateFull}
+        onClick={handleRefill}
+        disabled={generating || !prompt.trim()}
+      >
+        {generating ? "Generating..." : "Generate & Fill"}
+      </button>
+    </div>
+  )}
+</div> */}
         <div style={s.topRight}>
           {/* Save button */}
           {dirty && (
@@ -254,7 +338,7 @@ const handleDownloadPDF = () => {
 
           {/* Share link */}
           <button style={s.btnOutline} onClick={handleCopyLink}>
-            {copied ? "✓ Copied!" : "🔗 Share link"}
+            {copied ? " Copied!" : "Share link"}
           </button>
           {/* Download PDF */}
         
@@ -295,7 +379,35 @@ const handleDownloadPDF = () => {
 
       {/* ── Two-panel layout ──────────────────────────────────────── */}
       <div style={s.panels}>
+<div style={s.promptBox}>
+  <button
+    style={s.promptToggle}
+    onClick={() => setPromptOpen(p => !p)}
+  >
+    ✦ {promptOpen ? "Close AI fill" : "Fill with AI prompt"}
+  </button>
 
+  {promptOpen && (
+    <div style={s.promptInner}>
+      <textarea
+        style={s.promptTextarea}
+        rows={4}
+        placeholder={
+          `Example:\n"Client: Rahul Sharma, Project: Ayurvedic app with AI skin analysis, 3 months, budget ₹5L, 40-30-30 payment split"`
+        }
+        value={prompt}
+        onChange={e => setPrompt(e.target.value)}
+      />
+      <button
+        style={generating ? s.btnGeneratingFull : s.btnGenerateFull}
+        onClick={handleRefill}
+        disabled={generating || !prompt.trim()}
+      >
+        {generating ? " Generating..." : " Generate & Fill"}
+      </button>
+    </div>
+  )}
+</div>
         {/* Left — edit panel */}
         {panelOpen && (
           <div style={s.leftPanel}>
@@ -319,6 +431,7 @@ const handleDownloadPDF = () => {
               {doc.template_type === "timeline" && (     // ← ADD THIS BLOCK
   <TimelineFields content={content} update={update} />
 )}
+{/* ── AI Prompt Box ─────────────────────────────────── */}
             </div>
 
             {/* Save footer */}
@@ -438,18 +551,58 @@ function DevDocFields({ content, update }) {
 
 // ── 2. Client Proposal ────────────────────────────────────────────────
 function ClientDocFields({ content, update }) {
+  useEffect(() => {
+    if (!content.line_items?.length) return;
+
+    const parseAmt = (val) => {
+      if (!val) return 0;
+      return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
+    };
+
+    const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
+    const gstPercent = parseFloat(content.gst_percent) || 0;
+    const gstAmt     = (subtotal * gstPercent) / 100;
+    const total      = subtotal + gstAmt;
+
+    const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
+
+    update("subtotal",   fmt(subtotal));
+    update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+    update("total",      fmt(total));
+
+  }, [content.line_items, content.gst_percent]);
   const updatePara = (i, val) => {
     const updated = [...content.body_paragraphs];
     updated[i] = val;
     update("body_paragraphs", updated);
   };
 
+  // const updateItem = (i, key, val) => {
+  //   const updated = [...content.line_items];
+  //   updated[i] = { ...updated[i], [key]: val };
+  //   update("line_items", updated);
+  // };
+
   const updateItem = (i, key, val) => {
-    const updated = [...content.line_items];
-    updated[i] = { ...updated[i], [key]: val };
-    update("line_items", updated);
+  const updated = [...content.line_items];
+
+  updated[i] = {
+    ...updated[i],
+    [key]: val,
   };
 
+  // auto calculate amount
+  const hours =
+    parseFloat(updated[i].hours || 0);
+
+  const unitPrice =
+    parseFloat(updated[i].unit_price || 0);
+
+  updated[i].amount =
+    hours * unitPrice;
+
+  update("line_items", updated);
+};
   const addItem = () =>
     update("line_items", [...content.line_items, { description: "", hours: "", unit_price: "", amount: "" }]);
 
@@ -543,6 +696,34 @@ function ComplianceFields({ content, update }) {
 
 // ── 4. Invoice ────────────────────────────────────────────────────────
 function InvoiceFields({ content, update }) {
+  
+
+  // ── AUTO CALCULATE ──────────────────────────────────────────
+  useEffect(() => {
+    if (!content.line_items?.length) return;
+
+    // ₹1,20,000 ya 120000 — dono parse karta hai
+    const parseAmt = (val) => {
+      if (!val) return 0;
+      return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
+    };
+
+    const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
+    const gstPercent = parseFloat(content.gst_percent) || 0;
+    const gstAmt     = (subtotal * gstPercent) / 100;
+    const total      = subtotal + gstAmt;
+
+    // Indian format: ₹1,20,000
+    const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
+
+    update("subtotal",   fmt(subtotal));
+    update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+    update("total",      fmt(total));
+
+  }, [content.line_items, content.gst_percent]);
+  // ────────────────────────────────────────────────────────────
+
+  // ... baaki sab same rehta hai
   const updateItem = (i, key, val) => {
     const updated = [...content.line_items];
     updated[i] = { ...updated[i], [key]: val };
@@ -720,24 +901,27 @@ function TypeBadge({ type }) {
   );
 }
 
-function AsteriskIcon({ size = 18 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none">
-      <path d="M22 4 L22 40 M4 22 L40 22 M7.5 7.5 L36.5 36.5 M36.5 7.5 L7.5 36.5"
-        stroke="#111" strokeWidth="5" strokeLinecap="round" />
-    </svg>
-  );
-}
+// function AsteriskIcon({ size = 18 }) {
+//   return (
+//     <svg width={size} height={size} viewBox="0 0 44 44" fill="none">
+//       <path d="M22 4 L22 40 M4 22 L40 22 M7.5 7.5 L36.5 36.5 M36.5 7.5 L7.5 36.5"
+//         stroke="#111" strokeWidth="5" strokeLinecap="round" />
+//     </svg>
+//   );
+// }
 
 // ══════════════════════════════════════════════════════════════════════
 // STYLES
 // ══════════════════════════════════════════════════════════════════════
 
 const s = {
-  page:        { height: "100vh", display: "flex", flexDirection: "column", fontFamily: "system-ui,-apple-system,sans-serif", background: "#f2f2f2", overflow: "hidden" },
-  centerScreen:{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, fontFamily: "system-ui,sans-serif" },
-  loadingText: { fontSize: 14, color: "#888" },
-  spinner:     { width: 32, height: 32, border: "2.5px solid #eee", borderTopColor: "#111", borderRadius: "50%", animation: "spin .8s linear infinite" },
+  promptBox:      { borderBottom: "1px solid #f0f0f0", flexShrink: 0 ,width:"300px"},
+promptToggle:   { width: "100%", textAlign: "left", padding: "10px 16px", fontSize: 12, fontWeight: 600, color: "#131415", background: "#f5f3ff", border: "none", cursor: "pointer", borderBottom: "1px solid #fbfbfd" },
+promptInner:    { padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, background: "#fafafa" },
+promptTextarea: { width: "100%", border: "1px solid #e8e8e8", borderRadius: 6, padding: "8px 10px", fontSize: 12, color: "#333", outline: "none", fontFamily: "inherit", lineHeight: 1.5, resize: "vertical", background: "#fff" ,height:"300px"},
+btnGenerateFull:    { width: "100%", fontSize: 13, fontWeight: 600, background: "#141415", color: "#fff", border: "none", borderRadius: 8, padding: "10px 0", cursor: "pointer" },
+btnGeneratingFull:  { width: "100%", fontSize: 13, background: "#121314", color: "#fff", border: "none", borderRadius: 8, padding: "10px 0", cursor: "not-allowed" },
+  
   
 // btnOutlineDisabled: {
 //   fontSize: 12,

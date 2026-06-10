@@ -552,12 +552,29 @@ div {
         </td>
 
         <td class="r">
-          {{ item.unit_price or 'XXXXX' }}
+          {% if item.unit_price %}
+  ₹{{ item.unit_price }}
+{% else %}
+  XXXXX
+{% endif %}
         </td>
 
-        <td class="r">
+        <!-- <td class="r">
           {{ item.amount or 'XXXXX' }}
-        </td>
+        </td> -->
+        <td class="r">
+  {% set hours = item.hours|float(0) %}
+  {% set unit_price = item.unit_price|float(0) %}
+  {% set calculated_amount = hours * unit_price %}
+
+  {% if item.amount %}
+    ₹{{ item.amount }}
+  {% elif calculated_amount > 0 %}
+    ₹{{ calculated_amount }}
+  {% else %}
+    XXXXX
+  {% endif %}
+</td>
 
       </tr>
       {% endfor %}
@@ -727,13 +744,27 @@ div {
   </div>
 
 </div>
- <script>
+ <!-- <script>
   window.addEventListener("load", function () {
     document.fonts.ready.then(function () {
       setTimeout(function () {
         window.print();
       }, 1000);
     });
+  });
+</script> -->
+<script>
+  window.addEventListener("load", function () {
+    const params = new URLSearchParams(window.location.search);
+    const autoPrint = params.get("autoprint");
+
+    if (autoPrint === "1") {
+      document.fonts.ready.then(function () {
+        setTimeout(function () {
+          window.print();
+        }, 500);
+      });
+    }
   });
 </script>
 </body>
