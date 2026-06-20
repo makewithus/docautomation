@@ -231,15 +231,42 @@
     line-height: 0.85;
     overflow: hidden;
   } */
-   .footer-logo {
+   /* .footer-logo {
     position: absolute;
-    bottom: 20px;     /* bottom fixed */
-    left: 10px;
+    bottom: 20px;  */
+    /* left: 10px;
     width: 100%;
     line-height: 0.85;
+  7
+} */
+ /* ===== FOOTER LOGO ===== */
+
+.footer-logo {
+    position: absolute;
+    bottom: -1mm;
+    left: 7;
+
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
 }
 
-  .footer-logo-text {
+.footer-logo img {
+    display: block;
+    width: 198mm;
+    height: auto;
+    margin-left: 0;
+}
+
+/* Page settings */
+.page {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+}
+
+  /* .footer-logo-text { */
     /* font-size: 92px;
     font-weight: 900;
     letter-spacing: -5px;
@@ -247,9 +274,9 @@
     display: block;
     padding: 0 18px;
     position: relative; */
-     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-weight: 350;   /* thinner look */
-  font-size: 150px;
+     /* font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 350;    */
+  /* font-size: 150px;
   letter-spacing: -8px;
   color: #000;
   display: block;
@@ -258,22 +285,22 @@
   text-align: left;
   padding-left: 0;
   transform: scaleY(1.02);
-  }
+  } */
 
-  .footer-logo-reg {
+  /* .footer-logo-reg {
     /* font-size: 40px;
     font-weight: 900;
     vertical-align: super;
     letter-spacing: 0; */
-     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-size: 44px;      /* smaller */
-  font-weight: 400;     /* thinner */
+     /* font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 44px;    
+  font-weight: 400;   
   position: relative;
-  top: -3px;           /* move upward */
-  left: -6px;           /* bring closer to 's' */
-  vertical-align: top;
+  top: -3px;        */
+  /* left: -6px;          */
+  /* vertical-align: top;
   line-height: 1;
-  }
+  } */ */
 
   /* ── PAGE 2 — QUOTATION BLOCK ────────────────────────────────────── */
   .quote-meta {
@@ -491,7 +518,7 @@
 
   <!-- Big footer logo -->
   <div class="footer-logo">
-    <span class="footer-logo-text">makewithus<span class="footer-logo-reg">®</span></span>
+    <img src="../../static/images/makewithus.png" alt="MakeWithUs Logo">
   </div>
 
 </div>
@@ -608,17 +635,22 @@
 
   <!-- Big footer logo -->
   <div class="footer-logo">
-    <span class="footer-logo-text">makewithus<span class="footer-logo-reg">®</span></span>
+    <img src="../../static/images/makewithus.png" alt="MakeWithUs Logo">
   </div>
 
 </div>
 <script>
   window.addEventListener("load", function () {
-    document.fonts.ready.then(function () {
-      setTimeout(function () {
-        window.print();
-      }, 1000);
-    });
+    const params = new URLSearchParams(window.location.search);
+    const autoPrint = params.get("autoprint");
+
+    if (autoPrint === "1") {
+      document.fonts.ready.then(function () {
+        setTimeout(function () {
+          window.print();
+        }, 500);
+      });
+    }
   });
 </script>
 

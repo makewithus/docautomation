@@ -332,12 +332,20 @@ body {
 .footer-spacer { display: none; }
 
 .page-footer {
-  width: 100%;
-  overflow: hidden;
-  line-height: 0.85;
-  padding: 0;
-  margin: 0 0mm;          /* bleed to page edges */
-  width: calc(100% + 26mm);
+    position: absolute;
+    bottom: 8mm;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.page-footer img {
+    width: 185mm;      /* logo size */
+    max-width: none;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* .footer-wordmark {
@@ -541,17 +549,22 @@ body {
 
   <!-- ══ FOOTER — big makewithus® ════════════════════════════════ -->
   <div class="page-footer">
-    <span class="footer-wordmark">makewithus<span class="footer-reg">®</span></span>
+ <img src="../../static/images/makewithus.png" alt="MakeWithUs Logo">
   </div>
 
 </div>
 <script>
   window.addEventListener("load", function () {
-    document.fonts.ready.then(function () {
-      setTimeout(function () {
-        window.print();
-      }, 1000);
-    });
+    const params = new URLSearchParams(window.location.search);
+    const autoPrint = params.get("autoprint");
+
+    if (autoPrint === "1") {
+      document.fonts.ready.then(function () {
+        setTimeout(function () {
+          window.print();
+        }, 500);
+      });
+    }
   });
 </script>
 </body>

@@ -425,11 +425,16 @@ html, body {
 
 <script>
   window.addEventListener("load", function () {
-    document.fonts.ready.then(function () {
-      setTimeout(function () {
-        window.print();
-      }, 1000);
-    });
+    const params = new URLSearchParams(window.location.search);
+    const autoPrint = params.get("autoprint");
+
+    if (autoPrint === "1") {
+      document.fonts.ready.then(function () {
+        setTimeout(function () {
+          window.print();
+        }, 500);
+      });
+    }
   });
 </script>
 
