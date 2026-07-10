@@ -28,7 +28,7 @@ export default function Editor() {
   const [prompt, setPrompt]       = useState("");
   const [generating, setGenerating] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
-  
+  // const [gstEnabled, setGstEnabled] = useState(true);
   // const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {

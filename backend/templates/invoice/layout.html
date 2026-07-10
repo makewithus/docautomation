@@ -614,13 +614,23 @@ div {
       </tr>
 
       <!-- GST -->
-      <tr>
+       <!-- GST -->
+     {% if gst_percent and gst_percent > 0 %}
+<tr>
+  <td colspan="2"></td>
+  <td class="lc">GST</td>
+  <td class="ac">
+    <span class="amount-bold">₹{{ "%.0f"|format(gst_amount) }}</span>
+  </td>
+</tr>
+      {% endif %}
+      <!-- <tr>
         <td colspan="2"></td>
         <td class="lc">GST</td>
         <td class="ac">
           {{ gst_amount or '0' }}
         </td>
-      </tr>
+      </tr> -->
 
       <!-- TOTAL -->
       <tr class="tot-row">
@@ -649,13 +659,20 @@ div {
           {{ project_name or client_name }}
         </span>
       </div>
-
+      {% if gst_percent and gst_percent > 0 %}
       <div class="srow">
+        <span class="sk">TAX/GST</span>
+        <span class="sv" contenteditable="true">
+          {{ gst_percent }}%
+        </span>
+      </div>
+      {% endif %}
+      <!-- <div class="srow">
         <span class="sk">TAX/GST</span>
         <span class="sv" contenteditable="true">
           {{ gst_percent or 0 }}%
         </span>
-      </div>
+      </div> -->
 
       <div class="srow">
         <span class="sk">Total</span>
