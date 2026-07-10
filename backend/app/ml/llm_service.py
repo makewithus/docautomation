@@ -519,7 +519,6 @@ INSTRUCTIONS:
 """
 
         logger.info(f"OpenRouter call — model={settings.LLM_MODEL}, doc_type={doc_type}")
-
         response = client.chat.completions.create(
             model=settings.LLM_MODEL,
             max_tokens=4096,
@@ -530,10 +529,54 @@ INSTRUCTIONS:
             ],
         )
 
-        raw = response.choices[0].message.content.strip()
+        logger.debug(f"OpenRouter raw response: {response.model_dump()}")
+
+        choice = response.choices[0]
+
+        if choice.finish_reason == "length" or not choice.message.content:
+            logger.error(f"LLM truncated or empty: finish_reason={choice.finish_reason}")
+            raise ValueError(
+                "LLM response was truncated before producing output — try increasing max_tokens "
+                "or simplifying the prompt."
+            )
+
+        raw = choice.message.content.strip()
         logger.info(f"OpenRouter response received — {len(raw)} chars")
 
         parsed = self._safe_parse(raw, doc_type)
+
+        # response = client.chat.completions.create(
+        #     model=settings.LLM_MODEL,
+        #     max_tokens=4096,
+        #     temperature=0.3,
+        #     messages=[
+        #         {"role": "system", "content": SYSTEM_PROMPT},
+        #         {"role": "user",   "content": user_prompt},
+        #     ],
+        # )
+
+        # # raw = response.choices[0].message.content.strip()
+        # print(response.model_dump())
+
+        # if (
+        #     not response.choices
+        #     or response.choices[0].message is None
+        #     or response.choices[0].message.content is None
+        # ):
+        # choice = response.choices[0]
+        # if choice.finish_reason == "length" or not choice.message.content:
+        #     logger.error(f"LLM truncated or empty: finish_reason={choice.finish_reason}")
+        #     raise ValueError(
+        #         "LLM response was truncated before producing output — try increasing max_tokens "
+        #         "or simplifying the prompt."
+        #     )
+        # content = choice.message.content
+        # raise Exception(response.model_dump())
+
+        # raw = response.choices[0].message.content.strip()
+        # logger.info(f"OpenRouter response received — {len(raw)} chars")
+
+        # parsed = self._safe_parse(raw, doc_type)
 
         # Sanitise line_items — ensure hours and unit_price are always numbers
         # so template_engine.py never receives strings for math fields

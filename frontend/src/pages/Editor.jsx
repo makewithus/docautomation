@@ -45,23 +45,57 @@ export default function Editor() {
     setContent(p => ({ ...p, [key]: val }));
     setDirty(true);
   };
- 
 
   const handleSave = async () => {
-    if (!dirty) return;
-    setSaving(true);
+  setSaving(true);
+  try {
+    await updateDocument(id, content);
+    setDirty(false);
+    setSaved(true);
+    setIframeKey(k => k + 1);
+    setTimeout(() => setSaved(false), 2500);
+  } catch {
+    alert("Save failed. Please try again.");
+  } finally {
+    setSaving(false);
+  }
+};
+// ── LIVE PREVIEW — auto save on content change ─────────────
+useEffect(() => {
+  if (!content || !dirty) return;
+
+  const timer = setTimeout(async () => {
     try {
       await updateDocument(id, content);
+      setIframeKey(k => k + 1);   // iframe refresh
       setDirty(false);
       setSaved(true);
-      setIframeKey(k => k + 1);
-      setTimeout(() => setSaved(false), 2500);
+      setTimeout(() => setSaved(false), 1500);
     } catch {
-      alert("Save failed. Please try again.");
-    } finally {
-      setSaving(false);
+      // silent fail — user can manually save
     }
-  };
+  }, 800); // 800ms debounce — user ke type karne ke 800ms baad
+
+  return () => clearTimeout(timer); // cleanup on next keystroke
+}, [content]);
+// ───────────────────────────────────────────────────────────
+ 
+
+  // const handleSave = async () => {
+  //   if (!dirty) return;
+  //   setSaving(true);
+  //   try {
+  //     await updateDocument(id, content);
+  //     setDirty(false);
+  //     setSaved(true);
+  //     setIframeKey(k => k + 1);
+  //     setTimeout(() => setSaved(false), 2500);
+  //   } catch {
+  //     alert("Save failed. Please try again.");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -551,6 +585,17 @@ function DevDocFields({ content, update }) {
 
 // ── 2. Client Proposal ────────────────────────────────────────────────
 function ClientDocFields({ content, update }) {
+  // useEffect(() => {
+  //   if (!content.line_items?.length) return;
+
+  //   const parseAmt = (val) => {
+  //     if (!val) return 0;
+  //     return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
+  //   };
+    const [gstEnabled, setGstEnabled] = useState(
+    parseFloat(content.gst_percent) > 0
+  );
+
   useEffect(() => {
     if (!content.line_items?.length) return;
 
@@ -558,19 +603,33 @@ function ClientDocFields({ content, update }) {
       if (!val) return 0;
       return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
     };
-
-    const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
-    const gstPercent = parseFloat(content.gst_percent) || 0;
+     const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
+    const gstPercent = gstEnabled ? (parseFloat(content.gst_percent) || 0) : 0;
     const gstAmt     = (subtotal * gstPercent) / 100;
     const total      = subtotal + gstAmt;
 
     const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
 
     update("subtotal",   fmt(subtotal));
-    update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+    update("gst_percent", gstEnabled ? gstPercent : 0);
+    update("gst_amount", gstEnabled && gstPercent > 0 ? fmt(gstAmt) : "0");
     update("total",      fmt(total));
 
-  }, [content.line_items, content.gst_percent]);
+  }, [content.line_items, content.gst_percent, gstEnabled]);
+
+
+  //   const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
+  //   const gstPercent = parseFloat(content.gst_percent) || 0;
+  //   const gstAmt     = (subtotal * gstPercent) / 100;
+  //   const total      = subtotal + gstAmt;
+
+  //   const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
+
+  //   update("subtotal",   fmt(subtotal));
+  //   update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+  //   update("total",      fmt(total));
+
+  // }, [content.line_items, content.gst_percent]);
   const updatePara = (i, val) => {
     const updated = [...content.body_paragraphs];
     updated[i] = val;
@@ -650,6 +709,33 @@ function ClientDocFields({ content, update }) {
         </div>
       ))}
       <button style={f.addBtn} onClick={addItem}>+ Add line item</button>
+      <div style={gstToggleWrap}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: "#555" }}>GST</span>
+        <button
+          style={{
+            ...gstToggleBtn,
+            background: gstEnabled ? "#111" : "#e0e0e0",
+            color:      gstEnabled ? "#fff" : "#888",
+          }}
+          onClick={() => {
+            setGstEnabled(p => !p);
+            if (gstEnabled) {
+              update("gst_percent", 0);
+              update("gst_amount",  "0");
+            }
+          }}
+        >
+          {gstEnabled ? "ON" : "OFF"}
+        </button>
+      </div>
+
+      {gstEnabled && (
+        <Field
+          label="GST %"
+          value={String(content.gst_percent || "")}
+          onChange={v => update("gst_percent", v)}
+        />
+      )}
 
       <SectionLabel>Totals</SectionLabel>
       <Field label="Subtotal"   value={content.subtotal}   onChange={v => update("subtotal", v)} />
@@ -695,35 +781,171 @@ function ComplianceFields({ content, update }) {
 }
 
 // ── 4. Invoice ────────────────────────────────────────────────────────
-function InvoiceFields({ content, update }) {
-  
+// function InvoiceFields({ content, update }) {
+//     const [gstEnabled, setGstEnabled] = useState(
+//     parseFloat(content.gst_percent) > 0  // agar pehle se GST set hai toh on
+//   );
 
-  // ── AUTO CALCULATE ──────────────────────────────────────────
+//   // ── AUTO CALCULATE ───────────────────────────────────────
+//   useEffect(() => {
+//     if (!content.line_items?.length) return;
+
+//     const parseAmt = (val) => {
+//       if (!val) return 0;
+//       return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
+//     };
+
+//   // ── AUTO CALCULATE ──────────────────────────────────────────
+//   // useEffect(() => {
+//   //   if (!content.line_items?.length) return;
+
+//   //   // ₹1,20,000 ya 120000 — dono parse karta hai
+//   //   const parseAmt = (val) => {
+//   //     if (!val) return 0;
+//   //     return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
+//   //   };
+
+//     const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
+//     const gstPercent = parseFloat(content.gst_percent) || 0;
+//     const gstAmt     = (subtotal * gstPercent) / 100;
+//     const total      = subtotal + gstAmt;
+
+//     // Indian format: ₹1,20,000
+//     const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
+
+//     update("subtotal",   fmt(subtotal));
+//     update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+//     update("total",      fmt(total));
+
+//   }, [content.line_items, content.gst_percent]);
+//   // ────────────────────────────────────────────────────────────
+
+//   // ... baaki sab same rehta hai
+//   const updateItem = (i, key, val) => {
+//     const updated = [...content.line_items];
+//     updated[i] = { ...updated[i], [key]: val };
+//     update("line_items", updated);
+//   };
+
+//   const addItem = () =>
+//     update("line_items", [...(content.line_items || []), { description: "", hours: "", unit_price: "", amount: "" }]);
+
+//   const removeItem = (i) =>
+//     update("line_items", content.line_items.filter((_, idx) => idx !== i));
+
+//   return (
+//     <div style={f.wrap}>
+//       <SectionLabel>Invoice info</SectionLabel>
+//       <Field label="Invoice number" value={content.invoice_number} onChange={v => update("invoice_number", v)} />
+//       <Field label="Date"           value={content.date}           onChange={v => update("date", v)} />
+//       <Field label="Project name"   value={content.project_name}   onChange={v => update("project_name", v)} />
+
+//       <SectionLabel>Client info</SectionLabel>
+//       <Field label="Client name"    value={content.client_name}    onChange={v => update("client_name", v)} />
+//       <Field label="Client email"   value={content.client_email}   onChange={v => update("client_email", v)} />
+//       <Field label="Client address" value={content.client_address} onChange={v => update("client_address", v)} />
+
+//       <SectionLabel>Project description</SectionLabel>
+//       <Field label="Description"    value={content.project_description} onChange={v => update("project_description", v)} multiline />
+
+//       <SectionLabel>Line items</SectionLabel>
+//       {content.line_items?.map((item, i) => (
+//         <div key={i} style={f.card}>
+//           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+//             <span style={{ fontSize: 11, color: "#aaa" }}>Item {i + 1}</span>
+//             <button style={f.removeBtn} onClick={() => removeItem(i)}>✕ Remove</button>
+//           </div>
+//           <Field label="Description" value={item.description} onChange={v => updateItem(i, "description", v)} />
+//           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginTop: 6 }}>
+//             {["hours", "unit_price", "amount"].map(key => (
+//               <div key={key} style={f.group}>
+//                 <div style={f.label}>{key.replace("_", " ")}</div>
+//                 <input style={f.input} value={item[key] || ""} onChange={e => updateItem(i, key, e.target.value)} />
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       ))}
+//       <button style={f.addBtn} onClick={addItem}>+ Add line item</button>
+//       <div style={gstToggleWrap}>
+//         <span style={{ fontSize: 11, fontWeight: 600, color: "#555" }}>GST</span>
+//         <button
+//           style={{
+//             ...gstToggleBtn,
+//             background: gstEnabled ? "#111" : "#e0e0e0",
+//             color:      gstEnabled ? "#fff" : "#888",
+//           }}
+//           onClick={() => {
+//             setGstEnabled(p => !p);
+//             if (gstEnabled) {
+//               // turning OFF — reset GST fields
+//               update("gst_percent", 0);
+//               update("gst_amount",  "0");
+//             }
+//           }}
+//         >
+//           {gstEnabled ? "ON" : "OFF"}
+//         </button>
+//       </div>
+
+//       {/* GST % input — sirf tab dikhao jab ON ho */}
+//       {gstEnabled && (
+//         <Field
+//           label="GST %"
+//           value={String(content.gst_percent || "")}
+//           onChange={v => update("gst_percent", v)}
+//         />
+//       )}
+//       {/* ──────────────────────────────────────────────────── */}
+
+
+//       <SectionLabel>Totals</SectionLabel>
+//       <Field label="Subtotal"    value={content.subtotal}    onChange={v => update("subtotal", v)} />
+//       <Field label="GST"         value={content.gst_amount}  onChange={v => update("gst_amount", v)} />
+//       <Field label="Total"       value={content.total}       onChange={v => update("total", v)} />
+
+//       <SectionLabel>Payment & status</SectionLabel>
+//       <Field label="Payment status" value={content.payment_status} onChange={v => update("payment_status", v)} />
+//       <Field label="Payment date"   value={content.payment_date}   onChange={v => update("payment_date", v)} />
+//       <Field label="Bank name"      value={content.bank_name}      onChange={v => update("bank_name", v)} />
+//       <Field label="Account name"   value={content.account_name}   onChange={v => update("account_name", v)} />
+//       <Field label="Phone number"   value={content.phone_number}   onChange={v => update("phone_number", v)} />
+//       <Field label="UPI ID"         value={content.upi_id}         onChange={v => update("upi_id", v)} />
+//       <Field label="Notes"          value={content.notes}          onChange={v => update("notes", v)} multiline />
+//     </div>
+//   );
+// }
+
+function InvoiceFields({ content, update }) {
+
+  // ── GST TOGGLE STATE ─────────────────────────────────────
+  const [gstEnabled, setGstEnabled] = useState(
+    parseFloat(content.gst_percent) > 0  // agar pehle se GST set hai toh on
+  );
+
+  // ── AUTO CALCULATE ───────────────────────────────────────
   useEffect(() => {
     if (!content.line_items?.length) return;
 
-    // ₹1,20,000 ya 120000 — dono parse karta hai
     const parseAmt = (val) => {
       if (!val) return 0;
       return parseFloat(String(val).replace(/[₹,\s]/g, "")) || 0;
     };
 
     const subtotal   = content.line_items.reduce((sum, item) => sum + parseAmt(item.amount), 0);
-    const gstPercent = parseFloat(content.gst_percent) || 0;
+    const gstPercent = gstEnabled ? (parseFloat(content.gst_percent) || 0) : 0;
     const gstAmt     = (subtotal * gstPercent) / 100;
     const total      = subtotal + gstAmt;
 
-    // Indian format: ₹1,20,000
     const fmt = (n) => n > 0 ? `₹${n.toLocaleString("en-IN")}` : "0";
 
     update("subtotal",   fmt(subtotal));
-    update("gst_amount", gstPercent > 0 ? fmt(gstAmt) : "0");
+    update("gst_percent", gstEnabled ? gstPercent : 0);
+    update("gst_amount", gstEnabled && gstPercent > 0 ? fmt(gstAmt) : "0");
     update("total",      fmt(total));
 
-  }, [content.line_items, content.gst_percent]);
-  // ────────────────────────────────────────────────────────────
+  }, [content.line_items, content.gst_percent, gstEnabled]);
 
-  // ... baaki sab same rehta hai
   const updateItem = (i, key, val) => {
     const updated = [...content.line_items];
     updated[i] = { ...updated[i], [key]: val };
@@ -749,7 +971,7 @@ function InvoiceFields({ content, update }) {
       <Field label="Client address" value={content.client_address} onChange={v => update("client_address", v)} />
 
       <SectionLabel>Project description</SectionLabel>
-      <Field label="Description"    value={content.project_description} onChange={v => update("project_description", v)} multiline />
+      <Field label="Description" value={content.project_description} onChange={v => update("project_description", v)} multiline />
 
       <SectionLabel>Line items</SectionLabel>
       {content.line_items?.map((item, i) => (
@@ -771,10 +993,44 @@ function InvoiceFields({ content, update }) {
       ))}
       <button style={f.addBtn} onClick={addItem}>+ Add line item</button>
 
+      {/* ── GST TOGGLE ──────────────────────────────────────── */}
+      <div style={gstToggleWrap}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: "#555" }}>GST</span>
+        <button
+          style={{
+            ...gstToggleBtn,
+            background: gstEnabled ? "#111" : "#e0e0e0",
+            color:      gstEnabled ? "#fff" : "#888",
+          }}
+          onClick={() => {
+            setGstEnabled(p => !p);
+            if (gstEnabled) {
+              // turning OFF — reset GST fields
+              update("gst_percent", 0);
+              update("gst_amount",  "0");
+            }
+          }}
+        >
+          {gstEnabled ? "ON" : "OFF"}
+        </button>
+      </div>
+
+      {/* GST % input — sirf tab dikhao jab ON ho */}
+      {gstEnabled && (
+        <Field
+          label="GST %"
+          value={String(content.gst_percent || "")}
+          onChange={v => update("gst_percent", v)}
+        />
+      )}
+      {/* ──────────────────────────────────────────────────── */}
+
       <SectionLabel>Totals</SectionLabel>
-      <Field label="Subtotal"    value={content.subtotal}    onChange={v => update("subtotal", v)} />
-      <Field label="GST"         value={content.gst_amount}  onChange={v => update("gst_amount", v)} />
-      <Field label="Total"       value={content.total}       onChange={v => update("total", v)} />
+      <Field label="Subtotal" value={content.subtotal}   onChange={v => update("subtotal", v)} />
+      {gstEnabled && (
+        <Field label="GST amount" value={content.gst_amount} onChange={v => update("gst_amount", v)} />
+      )}
+      <Field label="Total"    value={content.total}      onChange={v => update("total", v)} />
 
       <SectionLabel>Payment & status</SectionLabel>
       <Field label="Payment status" value={content.payment_status} onChange={v => update("payment_status", v)} />
@@ -983,4 +1239,25 @@ const f = {
   uvpRow:       { display: "flex", alignItems: "center", gap: 4 },
   addBtn:       { fontSize: 12, color: "#555", background: "none", border: "1.5px dashed #ddd", borderRadius: 6, padding: "7px 12px", cursor: "pointer", textAlign: "left", fontFamily: "inherit" },
   removeBtn:    { fontSize: 11, color: "#c0392b", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" },
+};
+const gstToggleWrap = {
+  display:      "flex",
+  alignItems:   "center",
+  justifyContent: "space-between",
+  padding:      "8px 12px",
+  background:   "#f7f7f7",
+  borderRadius: 8,
+  border:       "1px solid #efefef",
+  marginTop:    4,
+};
+
+const gstToggleBtn = {
+  fontSize:     11,
+  fontWeight:   700,
+  padding:      "3px 12px",
+  borderRadius: 20,
+  border:       "none",
+  cursor:       "pointer",
+  letterSpacing: "0.5px",
+  transition:   "background 0.15s",
 };

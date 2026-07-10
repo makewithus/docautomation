@@ -149,6 +149,7 @@ from app.models.document     import Document
 from app.config.database     import get_db
 from pydantic import BaseModel
 import uuid
+import traceback
 
 router = APIRouter()
 
@@ -157,26 +158,61 @@ class RefillRequest(BaseModel):
 
 @router.post("/doc/{doc_id}/refill")
 def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_db)):
-    """
-    User ke prompt se document ka content regenerate karo.
-    Naya document nahi banta — sirf content update hota hai.
-    """
     doc = db.query(Document).filter(Document.id == doc_id).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    # LLM se naya content generate karo
-    # from app.ml.llm_service import llm_service
-    new_content = llm_service.generate_document_content(
-        raw_text=body.prompt,
-        doc_type=doc.template_type,
-    )
+    try:
+        new_content = llm_service.generate_document_content(
+            raw_text=body.prompt,
+            doc_type=doc.template_type,
+        )
 
-    # DB mein save karo
-    doc.content = new_content
-    db.commit()
+        doc.content = new_content
 
-    return { "success": True, "content": new_content }
+        # HTML preview bhi update karo
+        doc.html_content = fill_template(doc.template_type, new_content)
+
+        db.commit()
+        db.refresh(doc)
+
+        return {
+            "success": True,
+            "content": new_content,
+        }
+    except Exception as e:
+    
+        print(traceback.format_exc())
+        raise
+    # except Exception as e:
+    #     db.rollback()
+    #     raise HTTPException(
+    #         status_code=503,
+    #         detail=f"AI generation failed: {str(e)}"
+    #     )
+
+# @router.post("/doc/{doc_id}/refill")
+# def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_db)):
+#     """
+#     User ke prompt se document ka content regenerate karo.
+#     Naya document nahi banta — sirf content update hota hai.
+#     """
+#     doc = db.query(Document).filter(Document.id == doc_id).first()
+#     if not doc:
+#         raise HTTPException(status_code=404, detail="Document not found")
+
+#     # LLM se naya content generate karo
+#     # from app.ml.llm_service import llm_service
+#     new_content = llm_service.generate_document_content(
+#         raw_text=body.prompt,
+#         doc_type=doc.template_type,
+#     )
+
+#     # DB mein save karo
+#     doc.content = new_content
+#     db.commit()
+
+#     return { "success": True, "content": new_content }
 
 @router.post("/generate", response_model=GenerateResponse)
 async def smart_generate(

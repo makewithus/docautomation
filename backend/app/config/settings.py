@@ -72,7 +72,8 @@ class Settings(BaseSettings):
     OPENROUTER_SITE_NAME: str = "Doc Automation"
     
     # Primary — best JSON accuracy
-    LLM_MODEL: str = "openai/gpt-4o-mini"
+    # LLM_MODEL: str = "meta-llama/llama-3.3-70b-instruct:free"
+    LLM_MODEL : str = "openai/gpt-oss-20b:free"
 
 # Fallback — agar primary slow ho
 # LLM_MODEL_FALLBACK=meta-llama/llama-4-maverick:free
