@@ -1193,6 +1193,13 @@ btnGeneratingFull:  { width: "100%", fontSize: 13, background: "#121314", color:
 // },
 
   // Topbar
+  page: {
+  height: "100vh",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+  background: "#f7f7f7",
+},
   topbar:      { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px", height: 52, background: "#fff", borderBottom: "1px solid #e8e8e8", flexShrink: 0, gap: 12 },
   topLeft:     { display: "flex", alignItems: "center", gap: 10, minWidth: 0 },
   topRight:    { display: "flex", alignItems: "center", gap: 8, flexShrink: 0 },
@@ -1210,7 +1217,13 @@ btnGeneratingFull:  { width: "100%", fontSize: 13, background: "#121314", color:
   savedPill:   { fontSize: 12, color: "#27ae60", fontWeight: 500 },
 
   // Panels
-  panels:      { display: "flex", flex: 1, overflow: "hidden" },
+  // panels:      { display: "flex", flex: 1, overflow: "hidden" },
+  panels: {
+    display: "flex",
+    flex: 1,
+    overflow: "hidden",
+    minHeight: 0,
+},
 
   leftPanel:   { width: 300, display: "flex", flexDirection: "column", background: "#fff", borderRight: "1px solid #e8e8e8", flexShrink: 0, overflow: "hidden" },
   panelHeader: { padding: "14px 16px 10px", borderBottom: "1px solid #f0f0f0", flexShrink: 0 },
@@ -1218,10 +1231,19 @@ btnGeneratingFull:  { width: "100%", fontSize: 13, background: "#121314", color:
   panelSubtitle:{ fontSize: 11, color: "#aaa" },
   panelScroll: { flex: 1, overflowY: "auto", padding: "14px 16px", },
   saveFooter:  { padding: "12px 16px", borderTop: "1px solid #f0f0f0", flexShrink: 0 },
+  rightPanel: {
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  padding: 16,
+  overflow: "hidden",
+  minHeight: 0,
+},
 
-  rightPanel:  { flex: 1, display: "flex", flexDirection: "column", padding: 16, overflow: "hidden" },
-  iframeWrap:  { flex: 1, borderRadius: 10, overflow: "hidden", border: "1px solid #e0e0e0", background: "#fff" },
-  iframe:      { width: "100%", height: "100%", border: "none", display: "block" },
+  // rightPanel:  { flex: 1, display: "flex", flexDirection: "column", padding: 16, overflow: "hidden" },
+  iframeWrap:  { flex: 1, borderRadius: 10, overflow: "hidden", border: "1px solid #e0e0e0", background: "#fff" ,minHeight:0,
+    display:"flex"},
+  iframe:      { width: "100%", height: "100%", border: "none" },
 };
 
 const f = {
