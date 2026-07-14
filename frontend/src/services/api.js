@@ -202,6 +202,8 @@ export const editUrl = (docId) =>
 // services/api.js mein add karo
 export const refillDocument = (docId, prompt) =>
   client.post(`/doc/${docId}/refill`, { prompt });
+// export const refillDocument = (id, prompt) =>
+//   client.post(`/doc/${id}/refill`, { prompt }, { timeout: 60000 });
 
 // export const downloadPdfUrl = (id) => `${API}/doc/${id}/pdf`;
 
@@ -263,3 +265,7 @@ export const refillDocument = (docId, prompt) =>
  */
 export const checkHealth = () =>
   axios.get(`${BASE_URL}/`, { timeout: 5000 });
+export const translateDocument = (docId, language) =>
+  client.post(`/doc/${docId}/translate`, { language });
+
+

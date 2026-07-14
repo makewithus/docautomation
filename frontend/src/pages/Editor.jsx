@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getDocument, updateDocument, previewUrl,refillDocument} from "../services/api";
-
+// import {
+//   getDocument,
+//   updateDocument,
+//   previewUrl,
+//   refillDocument,
+//   translateDocument
+// } from "../services/api";
 
 const TYPE_LABELS = {
   developer_doc: "Developer Doc",
@@ -28,6 +34,12 @@ export default function Editor() {
   const [prompt, setPrompt]       = useState("");
   const [generating, setGenerating] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
+  const [listening, setListening]   = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const recognitionRef              = useRef(null);
+  const transcriptRef               = useRef("");
+  // const [translating, setTranslating]       = useState(false);
+  // const [showLangMenu, setShowLangMenu]     = useState(false);
   // const [gstEnabled, setGstEnabled] = useState(true);
   // const [downloading, setDownloading] = useState(false);
 
@@ -45,6 +57,167 @@ export default function Editor() {
     setContent(p => ({ ...p, [key]: val }));
     setDirty(true);
   };
+  const startVoice = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Voice not supported in this browser. Use Chrome.");
+      return;
+    }
+
+    const recognition          = new SpeechRecognition();
+    recognition.lang           = "en-IN"; // Indian English
+    recognition.continuous     = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      setListening(true);
+      setTranscript("");
+      transcriptRef.current = "";
+    };
+
+    recognition.onresult = (e) => {
+      const text = Array.from(e.results)
+        .map(r => r[0].transcript)
+        .join("");
+      setTranscript(text);
+      transcriptRef.current = text;   // 👈 ref ko bhi sync rakho — onend isi se padhega
+    };
+
+    recognition.onend = async () => {
+      setListening(false);
+      const finalText = transcriptRef.current;   // 👈 stale state nahi, ref se fresh value
+      if (finalText.trim()) {
+        setGenerating(true);
+        try {
+          const res = await refillDocument(id, finalText);
+          const gc =
+            res.data.content ||
+            res.data.document?.content ||
+            res.data.data?.content ||
+            res.data;
+          if (!gc || typeof gc !== "object") throw new Error("No content");
+
+          setContent(gc);
+          await updateDocument(id, gc);
+          setIframeKey(k => k + 1);
+          setTranscript("");
+          transcriptRef.current = "";
+        } catch {
+          alert("Voice generation failed.");
+        } finally {
+          setGenerating(false);
+        }
+      }
+    };
+
+    recognition.onerror = () => setListening(false);
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  // 👇 NAYA — fallback manual fill button ke liye
+  const handleManualFill = async () => {
+    const text = transcriptRef.current || transcript;
+    if (!text.trim()) return;
+    setGenerating(true);
+    try {
+      const res = await refillDocument(id, text);
+      const gc =
+        res.data.content ||
+        res.data.document?.content ||
+        res.data.data?.content ||
+        res.data;
+      if (!gc || typeof gc !== "object") throw new Error("No content");
+
+      setContent(gc);
+      await updateDocument(id, gc);
+      setIframeKey(k => k + 1);
+    } catch {
+      alert("Fill failed. Try again.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+//   const startVoice = () => {
+//   // Web Speech API — no library needed, built into browser
+//   const SpeechRecognition =
+//     window.SpeechRecognition || window.webkitSpeechRecognition;
+
+//   if (!SpeechRecognition) {
+//     alert("Voice not supported in this browser. Use Chrome.");
+//     return;
+//   }
+
+//   const recognition        = new SpeechRecognition();
+//   recognition.lang         = "en-IN"; // Indian English
+//   recognition.continuous   = true;
+//   recognition.interimResults = true;
+
+//   recognition.onstart = () => setListening(true);
+
+//   recognition.onresult = (e) => {
+//     const text = Array.from(e.results)
+//       .map(r => r[0].transcript)
+//       .join("");
+//     setTranscript(text);
+//   };
+
+//   recognition.onend = async () => {
+//     setListening(false);
+//     if (transcript.trim()) {
+//       // Reuse existing refill flow
+//       setGenerating(true);
+//       try {
+//         // const res = await refillDocument(id, transcript);
+//         // const gc  = res.data.content || res.data.document?.content;
+//         // if (!gc) throw new Error("No content");
+//         const res = await refillDocument(id, transcript);
+// const gc  = res.data.content 
+//          || res.data.document?.content 
+//          || res.data.data?.content
+//          || res.data;
+// if (!gc || typeof gc !== "object") throw new Error("No content");
+// setContent(gc);
+// await updateDocument(id, gc);    // ← yeh line ensure karta hai preview refresh ho
+// setIframeKey(k => k + 1);
+// setTranscript("");
+//         setContent(gc);
+//         await updateDocument(id, gc);
+//         setIframeKey(k => k + 1);
+//         setTranscript("");
+//       } catch { alert("Voice generation failed."); }
+//       finally { setGenerating(false); }
+//     }
+//   };
+
+//   recognition.onerror = () => setListening(false);
+
+//   recognitionRef.current = recognition;
+//   recognition.start();
+// };
+
+const stopVoice = () => {
+  recognitionRef.current?.stop();
+  setListening(false);
+};
+
+const handleTranslate = async (lang) => {
+  setShowLangMenu(false);
+  setTranslating(true);
+  try {
+    const res = await translateDocument(id, lang);
+    const gc  = res.data.content;
+    if (!gc) throw new Error("No content");
+    setContent(gc);
+    await updateDocument(id, gc);
+    setIframeKey(k => k + 1);
+    setDirty(false);
+  } catch { alert("Translation failed. Try again."); }
+  finally { setTranslating(false); }
+};
 
   const handleSave = async () => {
   setSaving(true);
@@ -317,35 +490,10 @@ const handleDownloadPDF = () => {
           {dirty && <span style={s.unsavedDot} title="Unsaved changes" />}
         </div>
 {/* ── AI Prompt Box ─────────────────────────────────── */}
-{/* <div style={s.promptBox}>
-  <button
-    style={s.promptToggle}
-    onClick={() => setPromptOpen(p => !p)}
-  >
-    ✦ {promptOpen ? "Close AI fill" : "Fill with AI prompt"}
-  </button>
 
-  {promptOpen && (
-    <div style={s.promptInner}>
-      <textarea
-        style={s.promptTextarea}
-        rows={4}
-        placeholder={
-          `Example:\n"Client: Rahul Sharma, Project: Ayurvedic app with AI skin analysis, 3 months, budget ₹5L, 40-30-30 payment split"`
-        }
-        value={prompt}
-        onChange={e => setPrompt(e.target.value)}
-      />
-      <button
-        style={generating ? s.btnGeneratingFull : s.btnGenerateFull}
-        onClick={handleRefill}
-        disabled={generating || !prompt.trim()}
-      >
-        {generating ? "Generating..." : "Generate & Fill"}
-      </button>
-    </div>
-  )}
-</div> */}
+{/* ── TRANSLATE BUTTON ── */}
+
+
         <div style={s.topRight}>
           {/* Save button */}
           {dirty && (
@@ -441,7 +589,59 @@ const handleDownloadPDF = () => {
       </button>
     </div>
   )}
+  {/* ── VOICE BUTTON ── */}
+<div style={voiceWrap}>
+  <button
+    style={{
+      ...voiceBtn,
+      background: listening ? "#e74c3c" : "#111",
+      transform:  listening ? "scale(1.1)" : "scale(1)",
+    }}
+    onClick={listening ? stopVoice : startVoice}
+    disabled={generating}
+  >
+    {listening ? "🔴 Listening..." : "🎙 Speak to fill"}
+  </button>
+
+  {/* Show live transcript */}
+  {/* Show live transcript */}
+  {transcript && (
+    <div style={transcriptBox}>
+      <span style={{ fontSize: 10, color: "#aaa", display: "block", marginBottom: 4 }}>
+        Heard:
+      </span>
+      {transcript}
+      <button
+        style={{
+          marginTop: 8,
+          width: "100%",
+          fontSize: 12,
+          fontWeight: 600,
+          background: "#111",
+          color: "#fff",
+          border: "none",
+          borderRadius: 6,
+          padding: "8px 0",
+          cursor: generating ? "not-allowed" : "pointer",
+          opacity: generating ? 0.6 : 1,
+        }}
+        onClick={handleManualFill}
+        disabled={generating}
+      >
+        {generating ? "Filling..." : "✓ Fill from transcript"}
+      </button>
+    </div>
+  )}
+
+  {listening && (
+    <div style={pulseWrap}>
+      <div style={pulseDot} />
+      <span style={{ fontSize: 11, color: "#e74c3c" }}>Speak now...</span>
+    </div>
+  )}
 </div>
+</div>
+
         {/* Left — edit panel */}
         {panelOpen && (
           <div style={s.leftPanel}>
@@ -1282,4 +1482,33 @@ const gstToggleBtn = {
   cursor:       "pointer",
   letterSpacing: "0.5px",
   transition:   "background 0.15s",
+};
+const voiceWrap    = { display: "flex", flexDirection: "column", gap: 8, padding: "12px 0" };
+const voiceBtn     = { width: "100%", fontSize: 13, fontWeight: 600, color: "#fff", border: "none", borderRadius: 8, padding: "12px 0", cursor: "pointer", transition: "all 0.2s" };
+const transcriptBox = { fontSize: 12, color: "#555", background: "#f0f0f0", borderRadius: 8, padding: "8px 10px", lineHeight: 1.5 };
+const pulseWrap    = { display: "flex", alignItems: "center", gap: 8 };
+const pulseDot     = { width: 10, height: 10, borderRadius: "50%", background: "#e74c3c", animation: "pulse 1s ease infinite" };
+const langMenu = {
+  position:   "absolute",
+  top:        "calc(100% + 6px)",
+  right:      0,
+  background: "#fff",
+  border:     "1px solid #e0e0e0",
+  borderRadius: 10,
+  boxShadow:  "0 4px 16px rgba(0,0,0,0.1)",
+  zIndex:     100,
+  minWidth:   130,
+  overflow:   "hidden",
+};
+const langMenuItem = {
+  display:    "block",
+  width:      "100%",
+  textAlign:  "left",
+  padding:    "10px 14px",
+  fontSize:   13,
+  background: "none",
+  border:     "none",
+  cursor:     "pointer",
+  fontFamily: "inherit",
+  borderBottom: "1px solid #f5f5f5",
 };

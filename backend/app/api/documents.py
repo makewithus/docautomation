@@ -260,3 +260,70 @@ def delete_document(doc_id: str, db: Session = Depends(get_db)):
     db.delete(doc)
     db.commit()
     return {"success": True, "deleted": doc_id}
+@router.post("/doc/{doc_id}/refill")
+async def refill_document(doc_id: str, body: dict, db: Session = Depends(get_db)):
+    doc = db.query(Document).filter(Document.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    prompt = body.get("prompt", "")
+    content = await generate_content(doc.template_type, prompt)
+    doc.content      = content
+    doc.html_content = fill_template(doc.template_type, content)
+    db.commit()
+    return {"content": content}
+
+
+@router.post("/doc/{doc_id}/translate")
+async def translate_document(doc_id: str, body: dict, db: Session = Depends(get_db)):
+    doc = db.query(Document).filter(Document.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    lang = body.get("language", "hindi")
+    
+    # Claude se translate karao
+    import httpx, json
+    from app.config.settings import settings
+    
+    headers = {
+        "Authorization": f"Bearer {settings.openrouter_api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://makewithus.in",
+    }
+    
+    payload = {
+        "model": "anthropic/claude-sonnet-4",
+        "max_tokens": 3000,
+        "temperature": 0.3,
+        "messages": [{
+            "role": "user",
+            "content": f"""Translate all text values in this JSON to {lang} language.
+Keep all JSON keys exactly the same — only translate the string values.
+Keep numbers, dates, and special characters unchanged.
+Return ONLY valid JSON, no explanation.
+
+JSON to translate:
+{json.dumps(doc.content, ensure_ascii=False)}"""
+        }]
+    }
+    
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        res = await client.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers, json=payload
+        )
+    
+    raw = res.json()["choices"][0]["message"]["content"].strip()
+    raw = raw.replace("```json", "").replace("```", "").strip()
+    
+    try:
+        translated_content = json.loads(raw)
+    except:
+        raise HTTPException(status_code=500, detail="Translation failed. Try again.")
+    
+    doc.content      = translated_content
+    doc.html_content = fill_template(doc.template_type, translated_content)
+    db.commit()
+    
+    return {"content": translated_content}
