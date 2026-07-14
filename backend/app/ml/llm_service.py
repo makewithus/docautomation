@@ -337,6 +337,11 @@ PRICING RULES — CRITICAL:
 - Return hours and unit_price as plain integers or floats (e.g. 20, 1500) — NO ₹ symbol, NO commas
 - Do NOT calculate amount, subtotal, gst_amount, or total — leave those fields OUT of your response
 - The backend will calculate all totals automatically
+- NEVER copy example numbers from the schema (like 20 hours or 1500 unit_price) — those are
+  format examples only, not real values. If the user's input does NOT mention specific hours,
+  rates, or budget for a line item, set hours and unit_price to 0. Do not invent numeric values
+  under any circumstances — 0 is always correct when data is missing, guessing is never correct.
+
 
 CRITICAL OUTPUT RULES:
 1. Return ONLY valid JSON — no markdown, no explanation, no preamble
@@ -513,7 +518,9 @@ Required JSON Schema (follow this structure exactly):
 INSTRUCTIONS:
 - Write all text fields as complete, professional content specific to this project and client
 - For body_paragraphs: write real paragraphs referencing the actual client, project, and features from the input
-- For line_items: hours and unit_price must be plain numbers (e.g. 20, 1500) — no ₹, no commas
+- For line_items: hours and unit_price must be plain numbers — no ₹, no commas
+- If hours/rate/budget are NOT mentioned anywhere in the raw input, set hours=0 and unit_price=0.
+  DO NOT use the example numbers shown in the schema (those are format placeholders, not real data).
 - Do NOT include amount, subtotal, gst_amount, or total in your response — backend handles math
 - If the raw input mentions a total budget (e.g. ₹2.5 lakh = 250000), distribute it across line items logically
 - Return ONLY valid JSON. No markdown. No code fences. Start with {{ end with }}
@@ -1043,14 +1050,22 @@ SCHEMAS = {
         "quotation_number": "QT-2026-001",
         "project_name": "PROJECT NAME IN CAPS",
         "gst_percent": 18,
+        # "line_items": [
+        #     {
+        #         "description": "SERVICE DESCRIPTION IN CAPS — specific to the project",
+        #         "hours": 20,
+        #         "unit_price": 1500
+        #     }
+        # ]
         "line_items": [
             {
                 "description": "SERVICE DESCRIPTION IN CAPS — specific to the project",
-                "hours": 20,
-                "unit_price": 1500
+                "hours": "<number — derive from input, or 0 if not mentioned>",
+                "unit_price": "<number — derive from input, or 0 if not mentioned>"
             }
         ]
     },
+
 
     "compliance_doc": {
         "title": "string",
@@ -1074,6 +1089,26 @@ SCHEMAS = {
 
     # CHANGED: Removed amount, subtotal, gst_amount, total — backend calculates
     # CHANGED: hours and unit_price are plain numbers, not strings with ₹
+    # "invoice": {
+    #     "invoice_number": "INV-2025-001",
+    #     "project_name": "PROJECT NAME IN CAPS",
+    #     "client_name": "string",
+    #     "client_phone": "string",
+    #     "upi_phone": "string",
+    #     "upi_id": "string",
+    #     "date": "DD/MM/YYYY",
+    #     "due_date": "DD/MM/YYYY",
+    #     "payment_status": "UNPAID",
+    #     "gst_percent": 18,
+    #     "line_items": [
+    #         {
+    #             "description": "SERVICE DESCRIPTION IN CAPS",
+    #             "hours": 20,
+    #             "unit_price": 1500
+    #         }
+    #     ],
+    #     "bank_name": "SBI / UPI"
+    # },
     "invoice": {
         "invoice_number": "INV-2025-001",
         "project_name": "PROJECT NAME IN CAPS",
@@ -1088,8 +1123,8 @@ SCHEMAS = {
         "line_items": [
             {
                 "description": "SERVICE DESCRIPTION IN CAPS",
-                "hours": 20,
-                "unit_price": 1500
+                "hours": "<number — derive from input, or 0 if not mentioned>",
+                "unit_price": "<number — derive from input, or 0 if not mentioned>"
             }
         ],
         "bank_name": "SBI / UPI"
