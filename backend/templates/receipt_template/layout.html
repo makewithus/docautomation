@@ -3,112 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Invoice {{ invoice_number }} — makewithus® </title>
+<title>Receipt {{ receipt_number }} — makewithus® </title>
 <style>
 
-/* @font-face {
-  font-family: 'TT Hoves';
-  src: local('Helvetica Neue'), local('HelveticaNeue'), local('Arial');
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'TT Hoves';
-  src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'), local('Arial Bold');
-  font-weight: 700;
-} */
-/* @font-face {
-  font-family: 'TT Hoves';
-  src: url('./tt_hoves_pro/TT Hoves Pro Trial ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-}
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('./tt_hoves_pro/TT Hoves Pro Trial Bold.ttf') format('truetype');
-  font-weight: 700;
-}
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('./tt_hoves_pro/TT Hoves Pro Trial Regular.ttf') format('truetype');
-  font-weight: 400;
-} */
- /* @font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Regular.ttf')
-       format('truetype');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Bold.ttf')
-       format('truetype');
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial ExtraBold.ttf')
-       format('truetype');
-  font-weight: 800;
-} */
- /* @font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Regular.ttf')
-       format('truetype');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Medium.ttf')
-       format('truetype');
-  font-weight: 500;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Bold.ttf')
-       format('truetype');
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial ExtraBold.ttf')
-       format('truetype');
-  font-weight: 800;
-} */
-/* @font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'TT Hoves';
-  src: url('tt_hoves_pro/TT Hoves Pro Trial ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-} */
-
-/* body *:not(.logo-text):not(.logo-reg) {
-  font-family: 'TT Hoves', sans-serif;
-} */
 @font-face {
   font-family: 'TT Hoves';
   src: url('/static/fonts/tt_hoves_pro/regular.ttf') format('truetype');
@@ -167,70 +64,18 @@ div {
   position: relative;
 }
 
-/* LOGO */
 .logo-wrapper {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.invoice-text {
-  font-family: 'TT Hoves', sans-serif;
-  font-size: 10.5px;
-  font-weight: 400;
-
-  letter-spacing: -0.4px;
-  line-height: 1;
-
-  text-transform: uppercase;
-  color: #111;
-}
-/* .logo-text {
-  font-family: 'TT Hoves', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 80pt;
-  font-weight: 900;
-  letter-spacing: -4px;
-  line-height: 0.88;
-  color: #000;
-  display: block;
-  text-transform: lowercase;
-} */
-
-.logo-text {
-  font-family: Helvetica, Arial, sans-serif;
-
-  font-size: 117pt;   /* bigger */
-  font-weight: 300;   /* thin like reference */
-  letter-spacing: -14px;
-  line-height: 0.82;
-
-  color: #000;
-  text-transform: lowercase;
-
-  margin: 0;
-  white-space: nowrap;
-}
-.logo-reg {
-  font-family:  Helvetica, Arial, sans-serif;
-  font-size: 28pt;
-  font-weight: 400;
-  position: absolute;
-  top: 0mm;
-  right: 0mm;
-  line-height: 1;
-  color: #000;
-  
-  font-weight: 400; */
-
-}
-
-/* META ROW */
 .meta-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 2mm;
-  margin-bottom: 10mm;
+  margin-bottom: 8mm;
 }
 
 .meta-left {
@@ -265,24 +110,34 @@ div {
   font-size: 9.9pt;
   font-weight: 100;
   text-transform: uppercase;
-  letter-spacing: -0em;  /* Canva -22 */
-  line-height: 1;   
+  letter-spacing: -0em;
+  line-height: 1;
   color: #000;
 }
 
-.banner { margin-bottom: 4mm; }
-.banner p {
-  font-size: 9.9pt;
-  font-weight: 400;   /* sab normal */
-  color: #e8190e;
+.kv-block { margin-bottom: 8mm; }
+.kv-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 4mm;
+}
+.kv-row .rk {
+  font-size: 10.5pt;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.em;
-  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #e8190e;
+  min-width: 48mm;
+  white-space: nowrap;
+}
+.kv-row .rv {
+  font-size: 10.5pt;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #000;
 }
 
-.banner .bl { font-weight: 900; }
-
-/* INVOICE TABLE */
 .inv-table { width: 100%; border-collapse: collapse; }
 
 .inv-table thead th {
@@ -298,8 +153,7 @@ div {
 }
 .inv-table thead th.r { text-align: right; }
 
-
- .inv-table tbody td {
+.inv-table tbody td {
   font-size: 9.9pt;
   font-weight: 400;
   text-transform: uppercase;
@@ -308,12 +162,10 @@ div {
   padding: 1.5mm 0;
   text-align: left;
   vertical-align: top;
-
-
   border-bottom: 0.7px solid #7f7f7f;
 }
 .inv-table tbody td.r { text-align: right; }
-.inv-table tbody tr.sp td { height: 20mm; }
+.inv-table tbody tr.sp td { height: 12mm; }
 
 .inv-table tfoot td {
   font-size: 9.9pt;
@@ -344,7 +196,7 @@ div {
   font-family: 'TT Hoves';
   font-weight: 800 !important;
 }
-/* BOTTOM SUMMARY STRIP */
+
 .bottom-strip {
   display: flex;
   justify-content: space-between;
@@ -352,36 +204,22 @@ div {
   margin-top: 5mm;
 }
 
-.sum-left .srow { display: flex; line-height: 1; }
+.sum-left .srow { display: flex; line-height: 1; margin-bottom: 3mm; }
 .sum-left .srow .sk {
   font-size: 9.9pt;
   font-weight: 400;
   color: #000;
-  min-width: 18mm;
+  min-width: 42mm;
+  text-transform: uppercase;
 }
 .sum-left .srow .sv {
   font-size: 9.9pt;
   font-weight: 400;
   color: #000;
+  text-transform: uppercase;
 }
 
 .sum-right { text-align: right; }
-.sum-right .pname {
-  font-size: 9.9pt;
-  font-weight: 400;
-  text-transform: uppercase;
-  color: #000;
-  display: block;
-  line-height: 1;
-}
-.sum-right .ptotal {
-  font-size: 9.9pt;
-  font-weight: 400;
-  color: #000;
-  display: block;
-  line-height: 1;
-  margin-bottom: 2mm;
-}
 .sum-right .pstatus {
   font-size: 9.9pt;
   font-weight: 900;
@@ -389,11 +227,31 @@ div {
   letter-spacing: 0.06em;
   color: #e8190e;
   display: block;
-  line-height: 1;
+  line-height: 1.4;
   text-align: right;
 }
 
-/* PAYMENT INFO */
+.note-block {
+  margin-top: 6mm;
+  padding-bottom: 4mm;
+  border-bottom: 0.7px solid #000;
+}
+.note-block .nk {
+  font-size: 9.9pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #e8190e;
+  margin-bottom: 2mm;
+  display: block;
+}
+.note-block p {
+  font-size: 9.5pt;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.5;
+}
+.note-block p strong { font-weight: 800; }
+
 .pay-row {
   display: flex;
   justify-content: space-between;
@@ -405,14 +263,11 @@ div {
   font-size: 9.9pt;
   font-weight: 400;
   color: #000;
-  /* line-height: 1;
-  max-width: 65mm; */
-  line-height: 1;   /* pehle 1.6 tha */
-  max-width: 85mm;     /* thoda compact */
+  line-height: 1;
+  max-width: 85mm;
   letter-spacing: -0.01em;
 }
 .pay-note strong {
-
   font-weight: 800;
 }
 
@@ -426,7 +281,6 @@ div {
 }
 .bank-info span { display: block; }
 
-/* FOOTER */
 .foot {
   display: flex;
   justify-content: space-between;
@@ -462,44 +316,34 @@ div {
     outline: none !important;
   }
 }
-/* @media print {
-  html, body { background: none; }
-  .page { margin: 0; width: 210mm; height: 297mm; box-shadow: none; }
-} */
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- LOGO -->
-  <!-- <div class="logo-wrapper">
-    <span class="logo-text">makewithus</span>
-    <span class="logo-reg">®</span>
-  </div> -->
   <img src="/static/images/makewithus.png" alt="MakeWithUs Logo">
 
-  <!-- META ROW -->
   <div class="meta-row">
     <div class="meta-left">
 
-      <span class="mk">Invoice No.</span>
+      <span class="mk">Receipt No.</span>
       <span class="mv" contenteditable="true">
-        {{ invoice_number }}
+        {{ receipt_number or 'Receipt Number from [RWC000]' }}
       </span>
 
       <span class="mk">Date</span>
       <span class="mv" contenteditable="true">
-        {{ date }}
+        {{ date or 'DD/MM/YYYY' }}
       </span>
 
-      <span class="mk">Project</span>
+      <span class="mk">For Service</span>
       <span class="mv" contenteditable="true">
-        {{ project_name or '—' }}
+        {{ service_name or '—' }}
       </span>
 
-      <span class="mk">Intended</span>
+      <span class="mk">Payment Mode</span>
       <span class="mv" contenteditable="true">
-        {{ client_name }}
+        {{ payment_mode or '—' }}
       </span>
 
     </div>
@@ -511,22 +355,37 @@ div {
     </div>
   </div>
 
-  <!-- RED BANNER -->
-  {% if project_name %}
-  <div class="banner">
-    <p>
-      <strong class="project-title">
-        PROJECT NAME:
-      </strong>
+  <div class="kv-block">
 
-      <span contenteditable="true">
-        {{ project_name }}
+    <div class="kv-row">
+      <span class="rk">Received From:</span>
+      <span class="rv" contenteditable="true">{{ client_name or 'CLIENT NAME' }}</span>
+    </div>
+
+    <div class="kv-row">
+      <span class="rk">Amount Received:</span>
+      <span class="rv" contenteditable="true">
+        ₹ {{ amount_received or 'XX,XXX' }}{% if amount_in_words %} ({{ amount_in_words }}){% endif %}
       </span>
-    </p>
-  </div>
-  {% endif %}
+    </div>
 
-  <!-- INVOICE TABLE -->
+    <div class="kv-row">
+      <span class="rk">Payment Mode:</span>
+      <span class="rv" contenteditable="true">{{ payment_mode or '—' }}</span>
+    </div>
+
+    <div class="kv-row">
+      <span class="rk">For Service:</span>
+      <span class="rv" contenteditable="true">{{ service_name or '—' }}</span>
+    </div>
+
+    <div class="kv-row">
+      <span class="rk">Balance:</span>
+      <span class="rv" contenteditable="true">₹ {{ balance if balance is defined else 'XX,XXX' }}</span>
+    </div>
+
+  </div>
+
   <table class="inv-table">
 
     <thead>
@@ -540,8 +399,7 @@ div {
 
     <tbody>
 
-      <!-- Dynamic Line Items -->
-      {% for item in (line_items or []) %}
+      {% for item in (line_items or [{'description': 'Payment Receipt', 'hours': '-', 'unit_price': '-', 'amount': amount_received}]) %}
       <tr>
 
         <td>
@@ -549,29 +407,20 @@ div {
         </td>
 
         <td class="r">
-          {{ item.hours or 'XX' }}
+          {{ item.hours or '-' }}
         </td>
 
         <td class="r">
-          {% if item.unit_price %}
+          {% if item.unit_price and item.unit_price != '-' %}
   ₹{{ item.unit_price }}
 {% else %}
-  XXXXX
+  -
 {% endif %}
         </td>
 
-        <!-- <td class="r">
-          {{ item.amount or 'XXXXX' }}
-        </td> -->
         <td class="r">
-  {% set hours = item.hours|float(0) %}
-  {% set unit_price = item.unit_price|float(0) %}
-  {% set calculated_amount = hours * unit_price %}
-
   {% if item.amount %}
     ₹{{ item.amount }}
-  {% elif calculated_amount > 0 %}
-    ₹{{ calculated_amount }}
   {% else %}
     XXXXX
   {% endif %}
@@ -580,19 +429,6 @@ div {
       </tr>
       {% endfor %}
 
-      <!-- Blank Rows -->
-      {% set item_count = (line_items or []) | length %}
-
-      {% for i in range([3 - item_count, 0] | max) %}
-      <tr>
-        <td>&nbsp;</td>
-        <td class="r"></td>
-        <td class="r"></td>
-        <td class="r"></td>
-      </tr>
-      {% endfor %}
-
-      <!-- Spacer Row -->
       <tr class="sp">
         <td colspan="4"></td>
       </tr>
@@ -601,44 +437,32 @@ div {
 
     <tfoot>
 
-      <!-- SUBTOTAL -->
       <tr class="sub-row">
         <td colspan="2"></td>
         <td class="lc">Subtotal</td>
         <td class="ac">
-        
           <span class="amount-bold">
-            {{ subtotal or 'XXXXXX' }}
+            ₹{{ subtotal or amount_received or 'XXXXXX' }}
           </span>
         </td>
       </tr>
 
-      <!-- GST -->
-       <!-- GST -->
-     {% if gst_percent and gst_percent > 0 %}
-<tr>
-  <td colspan="2"></td>
-  <td class="lc">GST</td>
-  <td class="ac">
-    <span class="amount-bold">₹{{ "%.0f"|format(gst_amount) }}</span>
-  </td>
-</tr>
-      {% endif %}
-      <!-- <tr>
+      {% if (gst_percent | float) > 0 %}
+      <tr>
         <td colspan="2"></td>
         <td class="lc">GST</td>
         <td class="ac">
-          {{ gst_amount or '0' }}
+          <span class="amount-bold">₹{{ "%.0f"|format(gst_amount | float) }}</span>
         </td>
-      </tr> -->
+      </tr>
+      {% endif %}
 
-      <!-- TOTAL -->
       <tr class="tot-row">
         <td colspan="2"></td>
         <td class="lc">Total</td>
         <td class="ac">
           <span class="price-bold">
-            {{ total or 'XXXXXX' }}
+            ₹{{ total or amount_received or 'XXXXXX' }}
           </span>
         </td>
       </tr>
@@ -647,76 +471,71 @@ div {
 
   </table>
 
-  <!-- BOTTOM SUMMARY STRIP -->
   <div class="bottom-strip">
 
-    <!-- LEFT SIDE -->
     <div class="sum-left">
 
       <div class="srow">
-        <span class="sk">Project Name</span>
+        <span class="sk">Project</span>
         <span class="sv" contenteditable="true">
-          {{ project_name or client_name }}
+          {{ service_name or project_name or '—' }}
         </span>
       </div>
-      {% if gst_percent and gst_percent > 0 %}
+
+      {% if (gst_percent | float) > 0 %}
       <div class="srow">
-        <span class="sk">TAX/GST</span>
+        <span class="sk">Tax/GST</span>
         <span class="sv" contenteditable="true">
           {{ gst_percent }}%
         </span>
       </div>
       {% endif %}
-      <!-- <div class="srow">
-        <span class="sk">TAX/GST</span>
-        <span class="sv" contenteditable="true">
-          {{ gst_percent or 0 }}%
-        </span>
-      </div> -->
 
       <div class="srow">
-        <span class="sk">Total</span>
+        <span class="sk">Balance After Payment</span>
         <span class="sv" contenteditable="true">
-          {{ total or 'XXXXX' }}
+          ₹ {{ balance if balance is defined else 'XX,XXX' }}
         </span>
       </div>
 
     </div>
 
-    <!-- RIGHT SIDE -->
     <div class="sum-right">
 
-      <span class="pname" contenteditable="true">
-        {{ (project_name or client_name) | upper }}*
-      </span>
+      <div class="srow" style="justify-content:flex-end;">
+        <span class="sk">Payment Status</span>&nbsp;
+        <span class="sv" contenteditable="true">{{ (payment_status or 'PAID') | upper }}</span>
+      </div>
 
-      <span class="ptotal" contenteditable="true">
-        {{ total or 'XXXXX' }}/-
-      </span>
+      <div class="srow" style="justify-content:flex-end;">
+        <span class="sk">Paid On</span>&nbsp;
+        <span class="sv" contenteditable="true">{{ paid_on or 'DD MONTH YYYY' }}</span>
+      </div>
 
       <span class="pstatus">
-
         <span contenteditable="true">
           {{ (payment_status or 'PAID/UNPAID') | upper }}
           WITH DATE
         </span>
-
         <br>
-
         <span contenteditable="true">
-          [{{ due_date or 'DD/MM/YYYY' }}]
+          [{{ paid_on or 'DD/MM/YYYY' }}]
         </span>
-
       </span>
 
     </div>
 
   </div>
 
-  <!-- PAYMENT INFO -->
+  <div class="note-block">
+    <span class="nk">Note:</span>
+    <p>This receipt acknowledges the payment received against the above-mentioned service.</p>
+    <p>The remaining balance, if any, shall be payable as per the agreed project schedule.</p>
+    <p>This receipt serves as an official confirmation of payment received by <strong>makewithus®.</strong></p>
+  </div>
+
   <div class="pay-row">
 
-    <!-- LEFT NOTE -->
     <div class="pay-note">
       All the information about the mode of payment,
       will be given to you the respective people
@@ -724,7 +543,6 @@ div {
       <strong>makewithus®.</strong>
     </div>
 
-    <!-- RIGHT BANK DETAILS -->
     <div class="bank-info">
 
       <span>
@@ -743,7 +561,7 @@ div {
       </span>
 
       <span contenteditable="true">
-        {{ upi_phone or 'UPI PHONE N  O.' }}
+        {{ upi_phone or 'UPI PHONE NO.' }}
       </span>
 
       <span contenteditable="true">
@@ -754,7 +572,6 @@ div {
 
   </div>
 
-  <!-- FOOTER -->
   <div class="foot">
     <span>©Makewithus 2026</span>
     <span>Makewithus.in</span>
@@ -762,15 +579,7 @@ div {
   </div>
 
 </div>
- <!-- <script>
-  window.addEventListener("load", function () {
-    document.fonts.ready.then(function () {
-      setTimeout(function () {
-        window.print();
-      }, 1000);
-    });
-  });
-</script> -->
+
 <script>
   window.addEventListener("load", function () {
     const params = new URLSearchParams(window.location.search);

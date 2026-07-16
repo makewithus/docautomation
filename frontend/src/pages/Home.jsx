@@ -1052,14 +1052,14 @@ const TEMPLATES = [
     // color:       "#FAECE7",
     // accent:      "#993C1D",
   },
-  // {
-  //   type:        "developer_doc",
-  //   icon:        "⚙️",
-  //   title:       "Developer Doc",
-  //   description: "Pre-development feature brief with UVP and project overview",
-  //   color:       "#EEEDFE",
-  //   accent:      "#534AB7",
-  // },
+  {
+    type:        "receipt_template",
+    // icon:        "⚙️",
+    title:       "Receipt Template",
+    description: "Confirmation of payment received, including service details and payment status",
+    // color:       "#EEEDFE",
+    // accent:      "#534AB7",
+  },
   {
     type:        "client_doc",
    

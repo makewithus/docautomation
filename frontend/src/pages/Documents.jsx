@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { listDocuments, deleteDocument } from "../services/api";
 
 const TYPE_META = {
-  developer_doc: { label: "Developer Doc",    icon: "⚙️", bg: "#EEEDFE", color: "#534AB7" },
+  receipt_template: { label: "Receipt Template",    icon: "⚙️", bg: "#EEEDFE", color: "#534AB7" },
   client_doc:    { label: "Client Proposal",  icon: "📋", bg: "#E1F5EE", color: "#0F6E56" },
   compliance:    { label: "Compliance",        icon: "📄", bg: "#FAEEDA", color: "#854F0B" },
   invoice:       { label: "Invoice",           icon: "🧾", bg: "#FAECE7", color: "#993C1D" },
+  timeline:       { label: "Timeline",           icon: "🧾", bg: "#FAECE7", color: "#993C1D" },
 };
 
 export default function Documents() {
