@@ -4166,17 +4166,27 @@ export default function Editor() {
 
   const recognitionRef = useRef(null);
   const transcriptRef  = useRef("");
-
-  // ── Load document, but always start with BLANK content (refresh = fresh start) ──
   useEffect(() => {
     getDocument(id)
       .then(async (res) => {
         setDoc(res.data);
+
         const blank = getBlankContent(res.data.template_type);
+        const backendContent = res.data.content || {};
+
+        // Backend-generated fields ko preserve karo — yeh user-typed nahi hain,
+        // isliye inhe blank karna galat hai
+        if (res.data.template_type === "invoice") {
+          blank.invoice_number = backendContent.invoice_number || "";
+          blank.date = backendContent.date || blank.date;
+        }
+        if (res.data.template_type === "receipt_template") {
+          blank.receipt_number = backendContent.receipt_number || "";
+          blank.date = backendContent.date || blank.date;
+        }
+
         setContent(blank);
 
-        // Reset backend content too, so the preview iframe (which loads
-        // straight from the backend) also shows blank instead of old data
         try {
           await updateDocument(id, blank);
           setIframeKey(k => k + 1);
@@ -4187,6 +4197,27 @@ export default function Editor() {
       .catch(() => setDoc(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  // ── Load document, but always start with BLANK content (refresh = fresh start) ──
+  // useEffect(() => {
+  //   getDocument(id)
+  //     .then(async (res) => {
+  //       setDoc(res.data);
+  //       const blank = getBlankContent(res.data.template_type);
+  //       setContent(blank);
+
+  //       // Reset backend content too, so the preview iframe (which loads
+  //       // straight from the backend) also shows blank instead of old data
+  //       try {
+  //         await updateDocument(id, blank);
+  //         setIframeKey(k => k + 1);
+  //       } catch (err) {
+  //         console.error("Failed to reset backend content:", err);
+  //       }
+  //     })
+  //     .catch(() => setDoc(null))
+  //     .finally(() => setLoading(false));
+  // }, [id]);
 
   const update = (key, val) => {
     setContent(p => ({ ...p, [key]: val }));
