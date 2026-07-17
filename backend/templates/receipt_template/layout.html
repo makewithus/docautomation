@@ -138,7 +138,7 @@ div {
   color: #000;
 }
 
-.inv-table { width: 100%; border-collapse: collapse; }
+.inv-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
 .inv-table thead th {
   font-size: 9.9pt;
@@ -163,6 +163,12 @@ div {
   text-align: left;
   vertical-align: top;
   border-bottom: 0.7px solid #7f7f7f;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.inv-table tbody td:first-child {
+  padding-right: 4mm;
 }
 .inv-table tbody td.r { text-align: right; }
 .inv-table tbody tr.sp td { height: 12mm; }
@@ -204,7 +210,7 @@ div {
   margin-top: 5mm;
 }
 
-.sum-left .srow { display: flex; line-height: 1; margin-bottom: 3mm; }
+.sum-left .srow { display: flex; line-height: 1; margin-bottom: 3mm; gap: 4mm; }
 .sum-left .srow .sk {
   font-size: 9.9pt;
   font-weight: 400;
@@ -220,15 +226,18 @@ div {
 }
 
 .sum-right { text-align: right; }
-.sum-right .pstatus {
+.sum-right .srow { display: flex; line-height: 1.6; margin-bottom: 3mm; }
+.sum-right .sk {
   font-size: 9.9pt;
-  font-weight: 900;
+  font-weight: 400;
+  color: #000;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #e8190e;
-  display: block;
-  line-height: 1.4;
-  text-align: right;
+}
+.sum-right .sv {
+  font-size: 9.9pt;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
 }
 
 .note-block {
@@ -258,6 +267,12 @@ div {
   align-items: flex-start;
   margin-top: 7mm;
 }
+.paid-line{
+    width:100%;
+    margin:4mm 0;
+    border:0;
+    border-top:1px solid #000;
+}
 
 .pay-note {
   font-size: 9.9pt;
@@ -270,7 +285,25 @@ div {
 .pay-note strong {
   font-weight: 800;
 }
+.pstatus {
+  display: block;
+  text-align: right;
+  margin-top: 5mm;
+  line-height: 1.4;
+}
 
+.pstatus b {
+  font-size: 9.9pt;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #e8190e;
+}
+
+.pstatus br + span {
+  display: inline-block;
+  margin-top: 1mm;
+}
 .bank-info {
   font-size: 9.9pt;
   font-weight: 400;
@@ -278,6 +311,7 @@ div {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  margin-right:20mm;
 }
 .bank-info span { display: block; }
 
@@ -442,7 +476,7 @@ div {
         <td class="lc">Subtotal</td>
         <td class="ac">
           <span class="amount-bold">
-            ₹{{ subtotal or amount_received or 'XXXXXX' }}
+            {{ subtotal_display or 'XXXXXX' }}
           </span>
         </td>
       </tr>
@@ -452,7 +486,7 @@ div {
         <td colspan="2"></td>
         <td class="lc">GST</td>
         <td class="ac">
-          <span class="amount-bold">₹{{ "%.0f"|format(gst_amount | float) }}</span>
+          <span class="amount-bold">{{ gst_amount_display or '₹0' }}</span>
         </td>
       </tr>
       {% endif %}
@@ -462,7 +496,7 @@ div {
         <td class="lc">Total</td>
         <td class="ac">
           <span class="price-bold">
-            ₹{{ total or amount_received or 'XXXXXX' }}
+            {{ total_display or 'XXXXXX' }}
           </span>
         </td>
       </tr>
@@ -482,14 +516,20 @@ div {
         </span>
       </div>
 
-      {% if (gst_percent | float) > 0 %}
+      <!-- {% if (gst_percent | float) > 0 %}
       <div class="srow">
         <span class="sk">Tax/GST</span>
         <span class="sv" contenteditable="true">
           {{ gst_percent }}%
         </span>
       </div>
-      {% endif %}
+      {% endif %} -->
+      <div class="srow">
+  <span class="sk">Tax/GST</span>
+  <span class="sv" contenteditable="true">
+    {{ gst_percent | default(0, true) }}%
+  </span>
+</div>
 
       <div class="srow">
         <span class="sk">Balance After Payment</span>
@@ -502,30 +542,34 @@ div {
 
     <div class="sum-right">
 
-      <div class="srow" style="justify-content:flex-end;">
-        <span class="sk">Payment Status</span>&nbsp;
+      <div class="srow" style="justify-content:flex-end; gap: 4mm;">
+        <span class="sk">Payment Status</span>
         <span class="sv" contenteditable="true">{{ (payment_status or 'PAID') | upper }}</span>
       </div>
 
-      <div class="srow" style="justify-content:flex-end;">
-        <span class="sk">Paid On</span>&nbsp;
+      <div class="srow" style="justify-content:flex-end; gap: 4mm;">
+        <span class="sk">Paid On</span>
         <span class="sv" contenteditable="true">{{ paid_on or 'DD MONTH YYYY' }}</span>
       </div>
-
-      <span class="pstatus">
-        <span contenteditable="true">
-          {{ (payment_status or 'PAID/UNPAID') | upper }}
-          WITH DATE
-        </span>
-        <br>
-        <span contenteditable="true">
-          [{{ paid_on or 'DD/MM/YYYY' }}]
-        </span>
-      </span>
+     
+     
 
     </div>
+    
+    
 
   </div>
+  <hr class="paid-line">
+  <span class="pstatus">
+  <span contenteditable="true">
+    <b>{{ (payment_status or 'PAID/UNPAID') | upper }}</b>
+    <b>WITH DATE</b>
+  </span>
+  <br>
+  <span contenteditable="true">
+    <b>[{{ paid_on or 'DD/MM/YYYY' }}]</b>
+  </span>
+</span>
 
   <div class="note-block">
     <span class="nk">Note:</span>

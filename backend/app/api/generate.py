@@ -290,22 +290,35 @@ router = APIRouter()
 class RefillRequest(BaseModel):
     prompt: str
 
-
 @router.post("/doc/{doc_id}/refill")
 def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_db)):
     doc = db.query(Document).filter(Document.id == doc_id).first()
+
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
     try:
+        print("========== REFILL ==========")
+        print(body.prompt)
+
         new_content = llm_service.generate_document_content(
             raw_text=body.prompt,
             doc_type=doc.template_type,
         )
 
-        doc.content = new_content
+        print("Generated:", new_content)
 
-        # HTML preview bhi update karo
+        if not isinstance(new_content, dict):
+            raise Exception("LLM did not return JSON")
+
+        # invoice number preserve
+        if doc.template_type == "invoice":
+            new_content["invoice_number"] = (
+                doc.content.get("invoice_number")
+                if doc.content else "MWU-INV-001"
+            )
+
+        doc.content = new_content
         doc.html_content = fill_template(doc.template_type, new_content)
 
         db.commit()
@@ -313,12 +326,52 @@ def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_
 
         return {
             "success": True,
-            "content": new_content,
+            "content": doc.content,
+            "html_content": doc.html_content
         }
-    except Exception:
+
+    # except Exception as e:
+    #     db.rollback()
+    #     traceback.print_exc()
+    #     raise HTTPException(
+    #         status_code=500,
+    #         detail=str(e)
+    except Exception as e:
+        traceback.print_exc()
         db.rollback()
-        print(traceback.format_exc())
-        raise HTTPException(status_code=503, detail="AI generation failed. Please try again.")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+        
+# @router.post("/doc/{doc_id}/refill")
+# def refill_document(doc_id: str, body: RefillRequest, db: Session = Depends(get_db)):
+#     doc = db.query(Document).filter(Document.id == doc_id).first()
+#     if not doc:
+#         raise HTTPException(status_code=404, detail="Document not found")
+
+#     try:
+#         new_content = llm_service.generate_document_content(
+#             raw_text=body.prompt,
+#             doc_type=doc.template_type,
+#         )
+
+#         doc.content = new_content
+
+#         # HTML preview bhi update karo
+#         doc.html_content = fill_template(doc.template_type, new_content)
+
+#         db.commit()
+#         db.refresh(doc)
+
+#         return {
+#             "success": True,
+#             "content": new_content,
+#         }
+#     except Exception:
+#         db.rollback()
+#         print(traceback.format_exc())
+#         raise HTTPException(status_code=503, detail="AI generation failed. Please try again.")
 
 
 def generate_invoice_number(db: Session) -> str:
